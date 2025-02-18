@@ -146,13 +146,9 @@ function filter_mislead_symbols(opt){
 /**
  *
  * @param {OPTION} opt
- * @returns String|null
+ * @returns {string[]}
  */
-function password_generate(opt){
-
-	if(!opt.validate){
-		return null;
-	}
+function filter_use_characters(opt){
 
 	let use_chars_str = '';
 	if(opt.use_type === 'default'){
@@ -183,23 +179,27 @@ function password_generate(opt){
 		use_chars_str = use_chars_str.replace(mislead_symbols[i], '');
 	}
 
-	const use_chars = array_shuffle(use_chars_str.split(''));
+	return array_shuffle(use_chars_str.split(''));
+}
+
+function generate(algo, len, use_chars, is_unique){
+
 	const use_chars_len = use_chars.length;
 
 	let password = '';
-	while(password.length < opt.length){
+	while(password.length < len){
 		let char;
-		if(opt.algorithm === 'crypt'){
+		if(algo === 'crypt'){
 			const arr = Array.from(crypto.getRandomValues(new BigUint64Array(CRYPT_GENERATE_COUNT)));
 			const bigint = arr[Math.floor(Math.random() * CRYPT_GENERATE_COUNT)];
 
 			char = use_chars[Number(bigint % BigInt(use_chars_len))];
-		} else if(opt.algorithm === 'math'){
+		} else if(algo === 'math'){
 			char = use_chars[Math.floor(Math.random() * use_chars_len)];
 		}
 
 		if(char !== undefined){
-			if(opt.unique){
+			if(is_unique){
 				if(password.indexOf(char) === -1)
 					password += char;
 			} else{
@@ -209,4 +209,42 @@ function password_generate(opt){
 	}
 
 	return password;
+}
+
+/**
+ *
+ * @param {OPTION} opt
+ * @returns {string|null}
+ */
+function password_generate(opt){
+
+	if(!opt.validate){
+		return null;
+	}
+
+	const use_chars = filter_use_characters(opt);
+
+	return generate(opt.algorithm, opt.length, use_chars, opt.unique);
+}
+
+/**
+ *
+ * @param {OPTION} opt
+ * @param {Number} count
+ * @returns {string[]|null}
+ */
+function bulk_password_generate(opt, count){
+
+	if(!opt.validate || count < 1){
+		return null;
+	}
+
+	const use_chars = filter_use_characters(opt);
+
+	const passwords = [];
+	for(let i = 0; i < count; i++){
+		passwords.push(generate(opt.algorithm, opt.length, use_chars, opt.unique));
+	}
+
+	return passwords;
 }

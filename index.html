@@ -40,8 +40,13 @@
 
 			const $algo_err = $('.algo-err-msg');
 
+			const $generate_btn = $('button[name="gen"]');
+			const $bulk_generate_btn = $('button.bulk-gen');
+
 	        const $validation_error = $('div#validation-error');
 	        const $generate_result = $('div#generate-result');
+	        const $bulk_generate_result = $('div#bulk-generate-result');
+			const $bulk_textarea = $bulk_generate_result.find('textarea[name="bulk_password"]');
 
 			const $password_copy_btn = $('button[name="password_copy"]');
 
@@ -72,10 +77,7 @@
 					$symbol_info.hide(anim_duration);
                 }
             };
-	        changeSymbolCheck();
 	        $sym_chk.change(changeSymbolCheck);
-
-	        $algo_err.hide();
 
 			$('.default-check').change(function(){
 				if($(this).prop('checked')){
@@ -103,27 +105,38 @@
                 }
             });
 
-			let password;
-	        $('button[name="gen"]').click(() => {
-		        $validation_error.hide().empty();
+			const set_option = () => {
 
-		        const opt = OPTION;
+				const opt = OPTION;
 
-		        opt.length   = parseInt($len_box.val());
-		        opt.use_type = $use_type_box.val();
+				opt.length   = parseInt($len_box.val());
+				opt.use_type = $use_type_box.val();
 
-		        opt.alpha_u = $al_u_chk.prop('checked');
-		        opt.alpha_l = $al_l_chk.prop('checked');
-		        opt.numeric = $num_chk.prop('checked');
-		        opt.symbol  = $sym_chk.prop('checked');
-		        opt.hex     = $hex_chk.prop('checked');
+				opt.alpha_u = $al_u_chk.prop('checked');
+				opt.alpha_l = $al_l_chk.prop('checked');
+				opt.numeric = $num_chk.prop('checked');
+				opt.symbol  = $sym_chk.prop('checked');
+				opt.hex     = $hex_chk.prop('checked');
 
-		        opt.unique  = $unq_chk.prop('checked');
-		        opt.mislead = $mis_chk.prop('checked');
+				opt.unique  = $unq_chk.prop('checked');
+				opt.mislead = $mis_chk.prop('checked');
 
-		        opt.algorithm = $('input[name="algorithm"]:checked').val();
+				opt.algorithm = $('input[name="algorithm"]:checked').val();
 
 				opt.ignore_symbols = $ignore_symbol_box.val();
+
+				return opt;
+            };
+
+			let password;
+	        $generate_btn.click(() => {
+		        $validation_error.hide().empty();
+
+				$bulk_generate_result.hide();
+                $bulk_textarea.text('');
+				$bulk_textarea.val('');
+
+		        const opt = set_option();
 
 		        const validate = validation(opt);
 		        if(validate !== null){
@@ -136,12 +149,36 @@
 					password = password_generate(opt);
 					if(password !== null){
 						$generate_result.find('div#generate-password').text(password);
-						$generate_result.show();
+						$generate_result.show(anim_duration);
                     } else{
 						$generate_result.hide();
                     }
                 }
 	        });
+
+	        $bulk_generate_btn.click(function(){
+		        $validation_error.hide().empty();
+				$generate_result.hide();
+
+		        const opt = set_option();
+
+		        const validate = validation(opt);
+		        if(validate !== null){
+			        $generate_result.hide().empty();
+
+			        $validation_error
+				        .append(`<div class="alert alert-danger">${validate}</div>`)
+				        .show(anim_duration);
+		        } else{
+			        const passwords = bulk_password_generate(opt, parseInt($(this).val()));
+			        const temp = (passwords !== null) ? passwords.join("\n") : '';
+
+                    $bulk_textarea.text(temp);
+                    $bulk_textarea.val(temp);
+
+			        $bulk_generate_result.show(anim_duration);
+		        }
+            });
 
 			if(!navigator.clipboard){
 				$password_copy_btn.hide();
@@ -152,7 +189,7 @@
 				navigator.clipboard.writeText(password).then(
 					() => {
 						$label.removeClass('bi-copy').addClass('bi-check2');
-						setTimeout(() => {console.log(1);
+						setTimeout(() => {
 							$label.removeClass('bi-check2').addClass('bi-copy');
 						}, 3000);
 					},
@@ -289,7 +326,7 @@
                 </div>
                 <div class="form-check form-check-inline">
                     <input type="radio" name="algorithm" value="math" id="algorithm_math" class="form-check-input">
-                    <label for="algorithm_math" class="form-check-label">Math&nbsp;<span class="error">(非推奨)</span></label>
+                    <label for="algorithm_math" class="form-check-label">Math<span class="error">&nbsp;(非推奨)</span></label>
                 </div>
                 <div class="error algo-err-msg">ご使用のブラウザではCrypt対応していないため、Mathを利用した乱数を用います。</div>
             </div>
@@ -310,9 +347,13 @@
         </div>
 
         <div class="d-grid gap-2 mt-3">
-            <button type="button" value="100" class="bulk_gen btn btn-sm btn-outline-primary mt-4">100個同時パスワード生成</button>
-            <button type="button" value="1000" class="bulk_gen btn btn-sm btn-outline-primary">1,000個同時パスワード生成</button>
-            <button type="button" value="10000" class="bulk_gen btn btn-sm btn-outline-primary">10,000個同時パスワード生成</button>
+            <button type="button" value="100" class="bulk-gen btn btn-sm btn-outline-primary mt-4">100個同時パスワード生成</button>
+            <button type="button" value="1000" class="bulk-gen btn btn-sm btn-outline-primary">1,000個同時パスワード生成</button>
+            <button type="button" value="10000" class="bulk-gen btn btn-sm btn-outline-primary">10,000個同時パスワード生成</button>
+        </div>
+
+        <div id="bulk-generate-result">
+            <textarea name="bulk_password" class="form-control" rows="10"></textarea>
         </div>
     </div>
 </body>
