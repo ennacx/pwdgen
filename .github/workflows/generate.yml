@@ -26,7 +26,7 @@ jobs:
           cp ./index.html ./dist/
           cp ./pwd_gen.js ./dist/
           cp ./style.css ./dist/
-          cp ./favicon ./dist/
+          cp ./favicon.ico ./dist/
           echo "Pages copied."
 
     - name: Upload Pages artifact
