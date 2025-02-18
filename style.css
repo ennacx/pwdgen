@@ -21,11 +21,18 @@ body {
 #mislead-samples {
   font-size: 0.88rem; }
 
-#generate-result {
+#validation-error, #generate-result {
+  display: none;
   margin-top: 16px; }
+
+#generate-password {
+  overflow: hidden; }
 
 .error {
   font-size: 0.88rem;
   color: #d33333; }
+
+.algo-err-msg {
+  display: none; }
 
 /*# sourceMappingURL=style.css.map */

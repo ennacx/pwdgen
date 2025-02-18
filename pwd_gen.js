@@ -3,8 +3,10 @@ const ALPHA_L = 'abcdefghijklmnopqrstuvwxyz';
 const NUMERIC = '1234567890';
 const SYMBOL  = '!"#$%&\'()+*-^@=~|[]{}`:;,.<>/?\\_';
 const SYMBOL_ZEN  = "！”＃＄％＆’（）＋＊－＾＠＝～｜「」｛｝｀：；，．＜＞／？￥＿";
-const HEXADECIMAL = '1234567890ABCDEF';
+const HEXADECIMAL = '1234567890abcdef';
 const MISLEAD_SYMBOLS = '0OcoIl1vyQq9';
+
+const CRYPT_GENERATE_COUNT= 10;
 
 const PWD_LEN_MIN = 4;
 const PWD_LEN_MAX = 256;
@@ -71,6 +73,10 @@ function validation(opt){
 
 	if(opt.length < PWD_LEN_MIN || opt.length > PWD_LEN_MAX){
 		return `文字数は${PWD_LEN_MIN}以上${PWD_LEN_MAX}以下の制限があります。`;
+	}
+
+	if(opt.algorithm !== 'crypt' && opt.algorithm !== 'math'){
+		return "アルゴリズムが不正です。";
 	}
 
 	if(opt.unique){
@@ -149,7 +155,6 @@ function password_generate(opt){
 	}
 
 	let use_chars_str = '';
-
 	if(opt.use_type === 'default'){
 		if(opt.alpha_u)
 			use_chars_str += ALPHA_U;
@@ -183,13 +188,23 @@ function password_generate(opt){
 
 	let password = '';
 	while(password.length < opt.length){
-		const char = use_chars[Math.floor(Math.random() * use_chars_len)];
+		let char;
+		if(opt.algorithm === 'crypt'){
+			const arr = Array.from(crypto.getRandomValues(new BigUint64Array(CRYPT_GENERATE_COUNT)));
+			const bigint = arr[Math.floor(Math.random() * CRYPT_GENERATE_COUNT)];
 
-		if(opt.unique){
-			if(password.indexOf(char) === -1)
+			char = use_chars[Number(bigint % BigInt(use_chars_len))];
+		} else if(opt.algorithm === 'math'){
+			char = use_chars[Math.floor(Math.random() * use_chars_len)];
+		}
+
+		if(char !== undefined){
+			if(opt.unique){
+				if(password.indexOf(char) === -1)
+					password += char;
+			} else{
 				password += char;
-		} else{
-			password += char;
+			}
 		}
 	}
 
