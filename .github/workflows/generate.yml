@@ -28,12 +28,16 @@ jobs:
       run: |
         mkdir -p ./dist
         echo "dist directory made."
+        npm install -g html-minifier
+        html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype ./index.html -o ./dist/index.html
+        echo "Installed html-minifier and minimize built HTML."
         npm install -g uglify-js
         uglifyjs ./pwdgen.js -c -m --output ./dist/pwdgen.js
         uglifyjs ./index.js -c -m --output ./dist/index.js
-        echo "Installed uglify and built JS."
-        cp ./index.html ./dist/
-        cp ./pwdgen.css ./dist/
+        echo "Installed uglify and minimize built JS."
+        npm install -g clean-css-cli
+        cleancss -o ./pwdgen.css ./dist/pwdgen.css
+        echo "Installed clean-css-cli and minimize built CSS."
         cp ./favicon.ico ./dist/
         echo "Pages copied."
 
