@@ -1,6 +1,8 @@
 // Google fonts "Noto Sans JP", "Atkinson Hyperlegible Mono"
 @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Noto+Sans+JP:wght@100..900&display=swap');
 
+$footer_height: 36px;
+
 body {
 	max-width: 720px;
 	margin: 16px auto;
@@ -25,56 +27,84 @@ h2 {
 	color: #878787;
 }
 
-#bulk-generate-result {
-	textarea {
-		max-height: 24lh;
-		field-sizing: content;
-		resize: none;
+footer {
+	text-align: right;
+	font-size: 0.67rem;
+	color: #a5a5a5;
+	width: 100%;
+	height: $footer_height;
+	margin: 0;
+	padding: 8px 16px;
+	border-top: 1px solid #eaeaea;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+
+	p {
+		a {
+			text-decoration: none;
+		}
+
+		i {
+			margin-right: 4px;
+		}
 	}
 }
 
-#symbol-info {
-	display: none;
+#content {
+	margin-bottom: $footer_height;
 
-	margin: 8px 0 12px;
-	font-size: 0.88rem;
-
-	& p {
-		margin-bottom: 0;
+	#bulk-generate-result {
+		textarea {
+			max-height: 24lh;
+			field-sizing: content;
+			resize: none;
+		}
 	}
 
-	& .ignore-symbol-input {
-		margin-top: 6px;
+	#symbol-info {
+		display: none;
+
+		margin: 8px 0 12px;
+		font-size: 0.88rem;
+
+		& p {
+			margin-bottom: 0;
+		}
+
+		& .ignore-symbol-input {
+			margin-top: 6px;
+		}
 	}
-}
 
-#symbol-samples,
-#mislead-samples {
-	background: #fff0f2;
-	border: 1px solid #666666;
-	border-radius: 4px;
-	padding: 4px 8px;
-	font-family: "Atkinson Hyperlegible Mono", monospace;
-}
+	#symbol-samples,
+	#mislead-samples {
+		background: #fff0f2;
+		border: 1px solid #666666;
+		border-radius: 4px;
+		padding: 4px 8px;
+		font-family: "Atkinson Hyperlegible Mono", monospace;
+	}
 
-#mislead-samples {
-	font-size: 0.88rem;
-}
+	#mislead-samples {
+		font-size: 0.88rem;
+	}
 
-#validation-error, #generate-result {
-	display: none;
-	margin-top: 16px;
-}
+	#validation-error, #generate-result {
+		display: none;
+		margin-top: 16px;
+	}
 
-#generate-password {
-	overflow: hidden;
-}
+	#generate-password {
+		overflow: hidden;
+	}
 
-.error {
-	font-size: 0.88rem;
-	color: #d33333;
-}
+	.error {
+		font-size: 0.88rem;
+		color: #d33333;
+	}
 
-.algo-err-msg {
-	display: none;
+	.algo-err-msg {
+		display: none;
+	}
 }

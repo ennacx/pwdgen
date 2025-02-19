@@ -17,43 +17,55 @@ h2 {
   font-size: 0.78rem;
   color: #878787; }
 
-#bulk-generate-result textarea {
-  max-height: 24lh;
-  field-sizing: content;
-  resize: none; }
+footer {
+  text-align: right;
+  font-size: 0.67rem;
+  color: #a5a5a5;
+  width: 100%;
+  height: 36px;
+  margin: 0;
+  padding: 8px 16px;
+  border-top: 1px solid #eaeaea;
+  position: absolute;
+  bottom: 0;
+  left: 0; }
+  footer p a {
+    text-decoration: none; }
+  footer p i {
+    margin-right: 4px; }
 
-#symbol-info {
-  display: none;
-  margin: 8px 0 12px;
-  font-size: 0.88rem; }
-  #symbol-info p {
-    margin-bottom: 0; }
-  #symbol-info .ignore-symbol-input {
-    margin-top: 6px; }
-
-#symbol-samples,
-#mislead-samples {
-  background: #fff0f2;
-  border: 1px solid #666666;
-  border-radius: 4px;
-  padding: 4px 8px;
-  font-family: "Atkinson Hyperlegible Mono", monospace; }
-
-#mislead-samples {
-  font-size: 0.88rem; }
-
-#validation-error, #generate-result {
-  display: none;
-  margin-top: 16px; }
-
-#generate-password {
-  overflow: hidden; }
-
-.error {
-  font-size: 0.88rem;
-  color: #d33333; }
-
-.algo-err-msg {
-  display: none; }
+#content {
+  margin-bottom: 36px; }
+  #content #bulk-generate-result textarea {
+    max-height: 24lh;
+    field-sizing: content;
+    resize: none; }
+  #content #symbol-info {
+    display: none;
+    margin: 8px 0 12px;
+    font-size: 0.88rem; }
+    #content #symbol-info p {
+      margin-bottom: 0; }
+    #content #symbol-info .ignore-symbol-input {
+      margin-top: 6px; }
+  #content #symbol-samples,
+  #content #mislead-samples {
+    background: #fff0f2;
+    border: 1px solid #666666;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-family: "Atkinson Hyperlegible Mono", monospace; }
+  #content #mislead-samples {
+    font-size: 0.88rem; }
+  #content #validation-error, #content #generate-result {
+    display: none;
+    margin-top: 16px; }
+  #content #generate-password {
+    overflow: hidden; }
+  #content .error {
+    font-size: 0.88rem;
+    color: #d33333; }
+  #content .algo-err-msg {
+    display: none; }
 
 /*# sourceMappingURL=pwdgen.css.map */
