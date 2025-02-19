@@ -61,9 +61,11 @@ Only one colored button will be generated each time you click it, but multiple b
 Currently, it supports simultaneous generation of 100, 1000, and 10000.<br>
 (This process runs within your browser and does not affect the hosting server, but it may cause your browser to stop working, so use it with caution.🤪)
 
-## Disclaimer🤧
+## Disclaimer🥺
+できるだけ複雑なランダム文字列を生成するように努めていますが、使用に際しては自己責任でお願いいたします。<br>
 We try to generate as complex random strings as possible, but use at your own risk.
 
+万が一、本ツールの使用によりトラブルが発生した場合でも、私たちは一切の責任を負いません。<br>
 In the unlikely event that any trouble occurs as a result of using this tool, we will not be held responsible in any way.
 
 ## License🧐
