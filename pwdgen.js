@@ -11,6 +11,14 @@ const CRYPT_GENERATE_COUNT= 10;
 const PWD_LEN_MIN = 4;
 const PWD_LEN_MAX = 256;
 
+const PWD_BULK_MIN = 1;
+const PWD_BULK_MAX = 10000;
+
+/**
+ * 設定エンティティー
+ *
+ * @type {{symbol: boolean, use_type: string, alpha_u: boolean, unique: boolean, length: number, mislead: boolean, ignore_symbols: string, alpha_l: boolean, numeric: boolean, hex: boolean, algorithm: string, validate: boolean}}
+ */
 const OPTION = {
 	length: PWD_LEN_MIN,
 
@@ -32,6 +40,12 @@ const OPTION = {
 	validate: false
 };
 
+/**
+ * 配列の重複要素を削除
+ *
+ * @param   {*[]} array
+ * @returns {*[]}
+ */
 function array_unique(array){
 	const unique_array = [];
 	const known_elements = {};
@@ -47,7 +61,14 @@ function array_unique(array){
 	return unique_array;
 }
 
+/**
+ * 配列要素の順番をシャッフル
+ *
+ * @param   {*[]} array
+ * @returns {*[]}
+ */
 function array_shuffle(array){
+
 	const cloneArray = [...array];
 
 	for(let i = cloneArray.length - 1; i >= 0; i--){
@@ -62,6 +83,7 @@ function array_shuffle(array){
 }
 
 /**
+ * 設定のバリデーション
  *
  * @param {OPTION} opt
  */
@@ -122,6 +144,12 @@ function validation(opt){
 	return null;
 }
 
+/**
+ * 紛らわしい文字種のフィルタリング
+ *
+ * @param {OPTION} opt
+ * @returns {string}
+ */
 function filter_mislead_symbols(opt){
 
 	let mislead_symbols = '';
@@ -144,6 +172,7 @@ function filter_mislead_symbols(opt){
 }
 
 /**
+ * 使用可能文字種の配列を生成
  *
  * @param {OPTION} opt
  * @returns {string[]}
@@ -182,6 +211,15 @@ function filter_use_characters(opt){
 	return array_shuffle(use_chars_str.split(''));
 }
 
+/**
+ * パスワード生成
+ *
+ * @param {string} algo
+ * @param {Number} len
+ * @param {string[]} use_chars
+ * @param {boolean} is_unique
+ * @returns {string}
+ */
 function generate(algo, len, use_chars, is_unique){
 
 	const use_chars_len = use_chars.length;
@@ -212,6 +250,7 @@ function generate(algo, len, use_chars, is_unique){
 }
 
 /**
+ * 単一のパスワード生成
  *
  * @param {OPTION} opt
  * @returns {string|null}
@@ -228,6 +267,7 @@ function password_generate(opt){
 }
 
 /**
+ * 複数のパスワード生成
  *
  * @param {OPTION} opt
  * @param {Number} count
@@ -238,6 +278,11 @@ function bulk_password_generate(opt, count){
 	if(!opt.validate || count < 1){
 		return null;
 	}
+
+	if(count < PWD_BULK_MIN)
+		count = PWD_BULK_MIN;
+	else if(count > PWD_BULK_MAX)
+		count = PWD_BULK_MAX;
 
 	const use_chars = filter_use_characters(opt);
 

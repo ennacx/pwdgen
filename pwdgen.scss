@@ -1,6 +1,16 @@
+// Google fonts "Noto Sans JP", "Atkinson Hyperlegible Mono"
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Noto+Sans+JP:wght@100..900&display=swap');
+
 body {
 	max-width: 720px;
-	margin: 0 auto;
+	margin: 16px auto;
+
+	font-family: "Noto Sans JP", sans-serif;
+	font-size: 0.93rem;
+}
+
+h1 {
+	margin-bottom: 24px;
 }
 
 textarea {
@@ -28,7 +38,7 @@ textarea {
 	border: 1px solid #666666;
 	border-radius: 4px;
 	padding: 4px 8px;
-	font-family: 'Osaka-Mono', 'Courier New', Menlo, Monaco, Consolas, monospace;
+	font-family: "Atkinson Hyperlegible Mono", monospace;
 }
 
 #mislead-samples {

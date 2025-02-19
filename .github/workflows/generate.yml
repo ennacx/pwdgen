@@ -19,15 +19,23 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
     - name: Run main
       run: |
-          mkdir -p ./dist
-          echo "dist directory made."
-          cp ./index.html ./dist/
-          cp ./pwd_gen.js ./dist/
-          cp ./style.css ./dist/
-          cp ./favicon.ico ./dist/
-          echo "Pages copied."
+        mkdir -p ./dist
+        echo "Install uglify and build."
+        npm install -g uglify-js
+        uglifyjs ./pwdgen.js -c -m --output ./dist/pwdgen.js
+        uglifyjs ./index.js -c -m --output ./dist/index.js
+        echo "dist directory made."
+        cp ./index.html ./dist/
+        cp ./pwdgen.css ./dist/
+        cp ./favicon.ico ./dist/
+        echo "Pages copied."
 
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
