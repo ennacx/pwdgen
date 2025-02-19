@@ -131,10 +131,26 @@
             <button type="button" value="100" class="bulk-gen btn btn-sm btn-outline-primary mt-4">100個同時パスワード生成</button>
             <button type="button" value="1000" class="bulk-gen btn btn-sm btn-outline-primary">1,000個同時パスワード生成</button>
             <button type="button" value="10000" class="bulk-gen btn btn-sm btn-outline-primary">10,000個同時パスワード生成</button>
+<!--            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#staticBulkPassword">Launch modal</button>-->
         </div>
+    </div>
 
-        <div id="bulk-generate-result">
-            <textarea name="bulk_password" class="form-control" rows="10"></textarea>
+    <div id="staticBulkPassword" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBulkPasswordLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="staticBulkPasswordLabel" class="modal-title"><span id="blk_value"></span>個のパスワード</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="bulk-generate-result">
+                        <textarea name="bulk_password" class="form-control" rows="10"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 

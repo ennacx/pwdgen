@@ -1,38 +1,57 @@
+// 文字列長まわり
 const $slider = $('input[name="pwd_len_slider"]');
 const $len_box = $('input[name="pwd_len_input"]');
-const $use_type_box = $('input[name="use_type"]');
-const $ignore_symbol_box = $('input[name="ignore_symbols"]');
 
+// 文字種チェックボックス
 const $al_u_chk = $('input#alpha_u');
 const $al_l_chk = $('input#alpha_l');
 const $num_chk  = $('input#num');
 const $sym_chk  = $('input#symbol');
 const $hex_chk  = $('input#hex');
 
+// オプションチェックボックス
 const $unq_chk  = $('input#unique');
 const $mis_chk  = $('input#mislead');
 
-const $symbol_info = $('#symbol-info');
+// 指定文字種が16進数かそれ以外かを判定するhiddenタグ
+const $use_type_box = $('input[name="use_type"]');
+// 使用したくない記号入力
+const $ignore_symbol_box = $('input[name="ignore_symbols"]');
 
-const $algo_err = $('.algo-err-msg');
-
+// ボタン類
 const $generate_btn = $('button[name="gen"]');
 const $bulk_generate_btn = $('button.bulk-gen');
 
-const $validation_error = $('div#validation-error');
-const $generate_result = $('div#generate-result');
-const $bulk_generate_result = $('div#bulk-generate-result');
-const $bulk_textarea = $bulk_generate_result.find('textarea[name="bulk_password"]');
+// 記号サンプル
+const $symbol_info = $('#symbol-info');
 
+// Crypt未実装ブラウザを知らせるメッセージエリア
+const $algo_err = $('.algo-err-msg');
+// 生成バリデーションエラーメッセージエリア
+const $validation_error = $('div#validation-error');
+
+// 単一パスワード生成結果表示エリア
+const $generate_result = $('div#generate-result');
+// 単一パスワード生成結果コピーボタン
 const $password_copy_btn = $('button[name="password_copy"]');
 
+// 複数パスワードの個数表示エリア
+const $bulk_value_label = $('#staticBulkPassword span#blk_value');
+// 複数パスワード生成結果表示エリア
+const $bulk_generate_result = $('div#bulk-generate-result');
+// 複数パスワード格納テキストボックス
+const $bulk_textarea = $bulk_generate_result.find('textarea[name="bulk_password"]');
+
+// コンテンツ表示のアニメーション速度
 const anim_duration = 100;
 
+// 文字列長の最低値/最大値を設定
 $slider.attr('min', PWD_LEN_MIN);
 $slider.attr('max', PWD_LEN_MAX);
 $len_box.attr('min', PWD_LEN_MIN);
 $len_box.attr('max', PWD_LEN_MAX);
 
+// Crypt実装チェック
 if(!window.crypto || typeof window.crypto.getRandomValues !== 'function'){
 	$('input[name="algorithm"]').prop('checked', false);
 	$('input[name="algorithm"][value="crypt"]').prop('disabled', true);
@@ -41,11 +60,16 @@ if(!window.crypto || typeof window.crypto.getRandomValues !== 'function'){
 	$algo_err.show(anim_duration);
 }
 
+// 登録済み記号一覧と、紛らわしい文字種一覧の表示
 $('#symbol-samples').text(SYMBOL);
 $('#mislead-samples').text(MISLEAD_SYMBOLS);
 
+// 選択文字種タイプのデフォルト値を設定
 $use_type_box.val(OPTION.use_type);
 
+/**
+ * 文字種"記号"チェックボックス制御
+ */
 const changeSymbolCheck = () => {
 	if($sym_chk.prop('checked')){
 		$symbol_info.show(anim_duration);
@@ -55,6 +79,9 @@ const changeSymbolCheck = () => {
 };
 $sym_chk.change(changeSymbolCheck);
 
+/**
+ * "16進数以外"の文字種チェックボックス制御
+ */
 $('.default-check').change(function(){
 	if($(this).prop('checked')){
 		$('.hex-check').prop('checked', false);
@@ -62,6 +89,9 @@ $('.default-check').change(function(){
 		$use_type_box.val('default');
 	}
 });
+/**
+ * "16進数"のチェックボックス制御
+ */
 $('.hex-check').change(function(){
 	if($(this).prop('checked')){
 		$('.default-check').prop('checked', false);
@@ -81,6 +111,29 @@ $('.hex-check').change(function(){
 	}
 });
 
+/**
+ * 設定値をオブジェクトに反映
+ *
+ * @returns {{
+ *      length: number,
+ *
+ *      use_type: string,
+ *
+ *      alpha_u: boolean,
+ *      alpha_l: boolean,
+ *      numeric: boolean,
+ *      symbol: boolean,
+ *      hex: boolean,
+ *
+ *      unique: boolean,
+ *      mislead: boolean,
+ *      algorithm: string,
+ *
+ *      ignore_symbols: string,
+ *
+ *      validate: boolean
+ * }}
+ */
 const set_option = () => {
 
 	const opt = OPTION;
@@ -104,11 +157,15 @@ const set_option = () => {
 	return opt;
 };
 
+// 生成パスワード格納
 let password;
+
+/**
+ * 単一パスワードの生成ボタンクリック
+ */
 $generate_btn.click(() => {
 	$validation_error.hide().empty();
 
-	$bulk_generate_result.hide();
 	$bulk_textarea.text('');
 	$bulk_textarea.val('');
 
@@ -132,6 +189,9 @@ $generate_btn.click(() => {
 	}
 });
 
+/**
+ * 複数パスワードの生成ボタンクリック
+ */
 $bulk_generate_btn.click(function(){
 	$validation_error.hide().empty();
 	$generate_result.hide();
@@ -142,23 +202,28 @@ $bulk_generate_btn.click(function(){
 	if(validate !== null){
 		$generate_result.hide().empty();
 
+		$bulk_textarea.text('');
+		$bulk_textarea.val('');
+
 		$validation_error
 			.append(`<div class="alert alert-danger">${validate}</div>`)
 			.show(anim_duration);
 	} else{
-		const passwords = bulk_password_generate(opt, parseInt($(this).val()));
+		const val = parseInt($(this).val());
+		const passwords = bulk_password_generate(opt, val);
 		const temp = (passwords !== null) ? passwords.join("\n") : '';
 
 		$bulk_textarea.text(temp);
 		$bulk_textarea.val(temp);
 
-		$bulk_generate_result.show(anim_duration);
+		$bulk_value_label.text(val.toLocaleString());
+		(new bootstrap.Modal('#staticBulkPassword')).show();
 	}
 });
 
-if(!navigator.clipboard){
-	$password_copy_btn.hide();
-}
+/**
+ * クリップボードコピーボタンクリック
+ */
 $password_copy_btn.click(function(){
 	const $label = $(this).find('i');
 
@@ -174,6 +239,14 @@ $password_copy_btn.click(function(){
 		});
 });
 
+// クリップボードコピー非対応ブラウザーの場合はコピーボタンを非表示にする
+if(!navigator.clipboard){
+	$password_copy_btn.hide();
+}
+
+/**
+ * 文字列長入力フォームの入力
+ */
 $len_box.on('keyup change', function(e){
 	const val = $(this).val();
 	let newval = (val === '' || isNaN(val)) ? PWD_LEN_MIN : parseInt(val);
@@ -186,10 +259,33 @@ $len_box.on('keyup change', function(e){
 	$len_box.val(newval);
 });
 
+/**
+ * スライダーの結果を文字列長入力フォームに即時反映
+ */
+const updateInterestRate = () => {
+	$len_box.val($slider.val());
+};
+
+/**
+ * スライダーと文字列長入力フォームの連携初期化
+ */
+const initializeSlider = () => {
+	updateInterestRate();
+	$slider.on('input', updateInterestRate)
+};
+initializeSlider();
+
+// 登録記号一覧の配列
 const symbols     = SYMBOL.split('');
+// 登録記号(全角)一覧の配列
 const symbols_zen = SYMBOL_ZEN.split('');
 
+// 登録記号以外を排除する際に使用する正規表現
 const ignore_symbol_regexp_pattern = `[^${SYMBOL.replace('-', '\\-').replace(']', '\\]')}]`;
+
+/**
+ * 含ませたくない記号入力フォームの内容変更
+ */
 $ignore_symbol_box.on('change', function(e){
 	const val = $(this).val();
 	const temp = [];
@@ -202,14 +298,3 @@ $ignore_symbol_box.on('change', function(e){
 
 	$(this).val((temp.length > 0) ? array_unique(temp).join('').replace(new RegExp(ignore_symbol_regexp_pattern, 'g'), '') : '');
 });
-
-const updateInterestRate = () => {
-	$len_box.val($slider.val());
-};
-
-const initializeSlider = () => {
-	updateInterestRate();
-	$slider.on('input', updateInterestRate)
-};
-
-initializeSlider();

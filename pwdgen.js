@@ -1,23 +1,50 @@
+// アルファベット大文字一覧
 const ALPHA_U = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+// アルファベット小文字一覧
 const ALPHA_L = 'abcdefghijklmnopqrstuvwxyz';
+// 数字一覧
 const NUMERIC = '1234567890';
+// 記号一覧
 const SYMBOL  = '!"#$%&\'()+*-^@=~|[]{}`:;,.<>/?\\_';
 const SYMBOL_ZEN  = "！”＃＄％＆’（）＋＊－＾＠＝～｜「」｛｝｀：；，．＜＞／？￥＿";
+// 16進数一覧
 const HEXADECIMAL = '1234567890abcdef';
+// 紛らわしい文字種一覧
 const MISLEAD_SYMBOLS = '0OcoIl1vyQq9';
 
+// 乱数マッピングアドレス選出用のランダム配列の要素数
 const CRYPT_GENERATE_COUNT= 10;
 
+// パスワード文字列長の最小値/最大値
 const PWD_LEN_MIN = 4;
 const PWD_LEN_MAX = 256;
 
+// 複数パスワード生成個数の最小値/最大値
 const PWD_BULK_MIN = 1;
 const PWD_BULK_MAX = 10000;
 
 /**
  * 設定エンティティー
  *
- * @type {{symbol: boolean, use_type: string, alpha_u: boolean, unique: boolean, length: number, mislead: boolean, ignore_symbols: string, alpha_l: boolean, numeric: boolean, hex: boolean, algorithm: string, validate: boolean}}
+ * @type {{
+ *      length: number,
+ *
+ *      use_type: string,
+ *
+ *      alpha_u: boolean,
+ *      alpha_l: boolean,
+ *      numeric: boolean,
+ *      symbol: boolean,
+ *      hex: boolean,
+ *
+ *      unique: boolean,
+ *      mislead: boolean,
+ *      algorithm: string,
+ *
+ *      ignore_symbols: string,
+ *
+ *      validate: boolean
+ * }}
  */
 const OPTION = {
 	length: PWD_LEN_MIN,

@@ -36,7 +36,7 @@ textarea {
 #mislead-samples {
   font-size: 0.88rem; }
 
-#validation-error, #generate-result, #bulk-generate-result {
+#validation-error, #generate-result {
   display: none;
   margin-top: 16px; }
 
