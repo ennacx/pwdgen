@@ -175,7 +175,6 @@ $generate_btn.click(() => {
 	const validate = validation(opt);
 	if(validate !== null){
 		$generate_result.hide();
-		$generate_result.empty();
 
 		$validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
 		$validation_error.show(anim_duration);
@@ -206,9 +205,6 @@ $bulk_generate_btn.click(function(){
 
 		const validate = validation(opt);
 		if(validate !== null){
-			$generate_result.hide();
-			$generate_result.empty();
-
 			$bulk_textarea.text('');
 			$bulk_textarea.val('');
 
