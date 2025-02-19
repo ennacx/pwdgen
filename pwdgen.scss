@@ -11,6 +11,12 @@ body {
 
 h1 {
 	margin-bottom: 16px;
+
+	a {
+		cursor: grab;
+		text-decoration: none;
+		color: black;
+	}
 }
 
 h2 {
@@ -19,8 +25,12 @@ h2 {
 	color: #878787;
 }
 
-textarea {
-	resize: vertical;
+#bulk-generate-result {
+	textarea {
+		max-height: 24lh;
+		field-sizing: content;
+		resize: none;
+	}
 }
 
 #symbol-info {

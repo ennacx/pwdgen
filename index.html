@@ -23,7 +23,7 @@
 
 <body>
     <div class="container-fluid">
-        <h1>🔒ランダム文字列生成🔑</h1>
+        <h1><a href="./">🔒ランダム文字列生成🔑</a></h1>
         <h2>パスワードにも使える&nbsp;(かもしれない)</h2>
 
         <label for="pwd_len_slider" class="form-label">文字の長さを指定</label>
@@ -114,15 +114,15 @@
         </div>
 
         <div class="d-grid gap-2 mt-3">
-            <button type="button" name="gen" class="btn btn-success">パスワード生成</button>
+            <button type="button" name="gen" class="btn btn-primary">パスワード生成</button>
         </div>
 
         <div id="validation-error"></div>
         <div id="generate-result">
-            <div class="alert alert-success w-100">
+            <div class="alert alert-primary w-100">
                 <div class="d-flex">
                     <div id="generate-password"></div>
-                    <button name="password_copy" class="btn btn-sm btn-outline-success ms-auto"><i class="bi bi-copy"></i></button>
+                    <button name="password_copy" class="btn btn-sm btn-outline-secondary ms-auto"><i class="bi bi-copy"></i></button>
                 </div>
             </div>
         </div>
@@ -139,12 +139,12 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="staticBulkPasswordLabel" class="modal-title"><span id="blk_value"></span>個のパスワード</h5>
+                    <h5 id="staticBulkPasswordLabel" class="modal-title">パスワード&nbsp;<span id="blk_value"></span>個&nbsp;同時生成結果</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="bulk-generate-result">
-                        <textarea name="bulk_password" class="form-control" rows="10"></textarea>
+                        <textarea name="bulk_password" class="form-control" rows="20"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

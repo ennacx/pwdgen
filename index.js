@@ -164,7 +164,8 @@ let password;
  * 単一パスワードの生成ボタンクリック
  */
 $generate_btn.click(() => {
-	$validation_error.hide().empty();
+	$validation_error.hide();
+	$validation_error.empty();
 
 	$bulk_textarea.text('');
 	$bulk_textarea.val('');
@@ -173,11 +174,11 @@ $generate_btn.click(() => {
 
 	const validate = validation(opt);
 	if(validate !== null){
-		$generate_result.hide().empty();
+		$generate_result.hide();
+		$generate_result.empty();
 
-		$validation_error
-			.append(`<div class="alert alert-danger">${validate}</div>`)
-			.show(anim_duration);
+		$validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
+		$validation_error.show(anim_duration);
 	} else{
 		password = password_generate(opt);
 		if(password !== null){
@@ -193,32 +194,42 @@ $generate_btn.click(() => {
  * 複数パスワードの生成ボタンクリック
  */
 $bulk_generate_btn.click(function(){
-	$validation_error.hide().empty();
-	$generate_result.hide();
+	new Promise((resolve) => {
+		$bulk_generate_btn.prop('disabled', true);
+		resolve();
+	}).then(() => {
+		$validation_error.hide();
+		$validation_error.empty();
+		$generate_result.hide();
 
-	const opt = set_option();
+		const opt = set_option();
 
-	const validate = validation(opt);
-	if(validate !== null){
-		$generate_result.hide().empty();
+		const validate = validation(opt);
+		if(validate !== null){
+			$generate_result.hide();
+			$generate_result.empty();
 
-		$bulk_textarea.text('');
-		$bulk_textarea.val('');
+			$bulk_textarea.text('');
+			$bulk_textarea.val('');
 
-		$validation_error
-			.append(`<div class="alert alert-danger">${validate}</div>`)
-			.show(anim_duration);
-	} else{
-		const val = parseInt($(this).val());
-		const passwords = bulk_password_generate(opt, val);
-		const temp = (passwords !== null) ? passwords.join("\n") : '';
+			$validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
+			$validation_error.show(anim_duration);
+		} else{
+			const val = parseInt($(this).val());
+			const passwords = bulk_password_generate(opt, val);
+			const temp = (passwords !== null) ? passwords.join("\n") : '';
 
-		$bulk_textarea.text(temp);
-		$bulk_textarea.val(temp);
+			$bulk_textarea.text(temp);
+			$bulk_textarea.val(temp);
 
-		$bulk_value_label.text(val.toLocaleString());
-		(new bootstrap.Modal('#staticBulkPassword')).show();
-	}
+			$bulk_value_label.text(val.toLocaleString());
+			(new bootstrap.Modal('#staticBulkPassword')).show();
+		}
+	}).then(() => {
+		$bulk_generate_btn.prop('disabled', false);
+	}).catch(() => {
+		$bulk_generate_btn.prop('disabled', false);
+	});
 });
 
 /**

@@ -7,14 +7,20 @@ body {
 
 h1 {
   margin-bottom: 16px; }
+  h1 a {
+    cursor: grab;
+    text-decoration: none;
+    color: black; }
 
 h2 {
   margin-bottom: 24px;
   font-size: 0.78rem;
   color: #878787; }
 
-textarea {
-  resize: vertical; }
+#bulk-generate-result textarea {
+  max-height: 24lh;
+  field-sizing: content;
+  resize: none; }
 
 #symbol-info {
   display: none;
