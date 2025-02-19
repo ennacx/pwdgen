@@ -22,16 +22,16 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
+        node-version: '22.x'
 
     - name: Run main
       run: |
         mkdir -p ./dist
-        echo "Install uglify and build."
+        echo "dist directory made."
         npm install -g uglify-js
         uglifyjs ./pwdgen.js -c -m --output ./dist/pwdgen.js
         uglifyjs ./index.js -c -m --output ./dist/index.js
-        echo "dist directory made."
+        echo "Installed uglify and built JS."
         cp ./index.html ./dist/
         cp ./pwdgen.css ./dist/
         cp ./favicon.ico ./dist/

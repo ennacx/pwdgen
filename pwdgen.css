@@ -6,7 +6,12 @@ body {
   font-size: 0.93rem; }
 
 h1 {
-  margin-bottom: 24px; }
+  margin-bottom: 16px; }
+
+h2 {
+  margin-bottom: 24px;
+  font-size: 0.78rem;
+  color: #878787; }
 
 textarea {
   resize: vertical; }
