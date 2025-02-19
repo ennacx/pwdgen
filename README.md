@@ -1,7 +1,7 @@
 # Random string generator🔒
 
 Generates a random string of a specified length using JavaScript.<br>
-(Sorry, All content is written in Japanese. 🙇‍♂️)
+(Sorry, HTML content is written in Japanese. 🙇‍♂️)
 
 ## How to use🤔
 This project is hosted on GitHub Pages.<br>
