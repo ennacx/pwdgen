@@ -6,16 +6,22 @@ body {
   font-size: 0.93rem; }
 
 h1 {
-  margin-bottom: 16px; }
+  margin-bottom: 8px; }
   h1 a {
     cursor: grab;
     text-decoration: none;
     color: black; }
 
 h2 {
-  margin-bottom: 24px;
-  font-size: 0.78rem;
-  color: #878787; }
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+  color: green; }
+
+#subheader {
+  margin-bottom: 24px; }
+  #subheader p {
+    font-size: 0.78rem;
+    color: #878787; }
 
 footer {
   text-align: right;
@@ -33,6 +39,8 @@ footer {
     text-decoration: none; }
   footer p i {
     margin-right: 4px; }
+  footer .disclaimer {
+    color: #aaaacc; }
 
 #content {
   margin-bottom: 36px; }

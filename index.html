@@ -2,6 +2,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="robots" content="index,follow" />
+    <meta name="keywords" content="ランダム文字列,ランダム文字列生成,ランダム文字列作成,パスワード生成,パスワード作成" />
 
     <title>パスワード生成</title>
 
@@ -24,7 +25,11 @@
 <body>
     <div id="content" class="container-fluid">
         <h1><a href="./">🔒ランダム文字列生成🔑</a></h1>
-        <h2>パスワードにも使える😀&nbsp;(かもしれない🤔)</h2>
+        <h2>Random characters generator</h2>
+
+        <div id="subheader">
+            <p>パスワードにも使える😀&nbsp;(かもしれない🤔)</p>
+        </div>
 
         <label for="pwd_len_slider" class="form-label">文字列の長さを指定</label>
         <input type="range" name="pwd_len_slider" step="1" value="16" id="pwd_len_slider" class="form-range">
@@ -135,8 +140,13 @@
         </div>
     </div>
 
-    <footer>
-        <p class="copyright">Ennacx&nbsp;|&nbsp;<a href="https://github.com/ennacx/pwdgen" target="_blank"><i class="bi bi-github"></i>Github</a></p>
+    <footer class="d-flex">
+        <div class="disclaimer">
+            <p>In the unlikely event that any trouble occurs as a result of using this tool, we will not be held responsible in any way.</p>
+        </div>
+        <div class="ms-auto">
+            <p class="copyright">Ennacx&nbsp;|&nbsp;<a href="https://github.com/ennacx/pwdgen" target="_blank"><i class="bi bi-github"></i>Github</a></p>
+        </div>
     </footer>
 
     <div id="staticBulkPassword" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBulkPasswordLabel" aria-hidden="true">
