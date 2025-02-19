@@ -36,7 +36,7 @@ jobs:
         uglifyjs ./index.js -c -m --output ./dist/index.js
         echo "Installed uglify and minimize built JS."
         npm install -g clean-css-cli
-        cleancss -o ./pwdgen.css ./dist/pwdgen.css
+        cleancss -o ./dist/pwdgen.css ./pwdgen.css
         echo "Installed clean-css-cli and minimize built CSS."
         cp ./favicon.ico ./dist/
         echo "Pages copied."
