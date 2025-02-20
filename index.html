@@ -8,7 +8,6 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 
     <script src="pwdgen.js"></script>
@@ -23,7 +22,8 @@
 </head>
 
 <body>
-    <div id="content" class="container-fluid">
+    <div id="content">
+    <div class="container-fluid">
         <h1><a href="./">🔒ランダム文字列生成🔑</a></h1>
         <h2>Random characters generator</h2>
 
@@ -136,13 +136,13 @@
             <button type="button" value="100" class="bulk-gen btn btn-sm btn-outline-primary mt-4">100個同時パスワード生成</button>
             <button type="button" value="1000" class="bulk-gen btn btn-sm btn-outline-primary">1,000個同時パスワード生成</button>
             <button type="button" value="10000" class="bulk-gen btn btn-sm btn-outline-primary">10,000個同時パスワード生成</button>
-<!--            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#staticBulkPassword">Launch modal</button>-->
         </div>
+    </div>
     </div>
 
     <footer class="d-flex">
         <div class="disclaimer">
-            <p>In the unlikely event that any trouble occurs as a result of using this tool, we will not be held responsible in any way.</p>
+            <p>本ツールの使用によりトラブルが発生した場合、私たちは一切の責任を負いません。</p>
         </div>
         <div class="ms-auto">
             <p class="copyright">Ennacx&nbsp;|&nbsp;<a href="https://github.com/ennacx/pwdgen" target="_blank"><i class="bi bi-github"></i>Github</a></p>
