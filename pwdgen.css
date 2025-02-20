@@ -49,10 +49,6 @@ footer {
 
 #content {
   padding-bottom: 52px !important; }
-  #content #bulk-generate-result textarea {
-    max-height: 24lh;
-    field-sizing: content;
-    resize: none; }
   #content #symbol-info {
     display: none;
     margin: 8px 0 12px;
@@ -80,5 +76,11 @@ footer {
     color: #d33333; }
   #content .algo-err-msg {
     display: none; }
+
+#bulk-generate-result textarea {
+  font-family: "Atkinson Hyperlegible Mono", monospace;
+  max-height: 24lh;
+  field-sizing: content;
+  resize: none; }
 
 /*# sourceMappingURL=pwdgen.css.map */

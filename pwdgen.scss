@@ -2,11 +2,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Noto+Sans+JP:wght@100..900&display=swap');
 
 $footer_height: 36px;
+$default_font: "Noto Sans JP", sans-serif;
+$mono_font: "Atkinson Hyperlegible Mono", monospace;
 
 body {
 	margin: 16px auto;
 
-	font-family: "Noto Sans JP", sans-serif;
+	font-family: $default_font;
 	font-size: 0.93rem;
 }
 
@@ -80,14 +82,6 @@ footer {
 #content {
 	padding-bottom: $footer_height + 16px !important;
 
-	#bulk-generate-result {
-		textarea {
-			max-height: 24lh;
-			field-sizing: content;
-			resize: none;
-		}
-	}
-
 	#symbol-info {
 		display: none;
 
@@ -109,7 +103,7 @@ footer {
 		border: 1px solid #666666;
 		border-radius: 4px;
 		padding: 4px 8px;
-		font-family: "Atkinson Hyperlegible Mono", monospace;
+		font-family: $mono_font;
 	}
 
 	#mislead-samples {
@@ -132,5 +126,15 @@ footer {
 
 	.algo-err-msg {
 		display: none;
+	}
+}
+
+#bulk-generate-result {
+	& textarea {
+		font-family: $mono_font;
+
+		max-height: 24lh;
+		field-sizing: content;
+		resize: none;
 	}
 }
