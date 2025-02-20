@@ -30,16 +30,16 @@ const $algo_err = $('.algo-err-msg');
 // 生成バリデーションエラーメッセージエリア
 const $validation_error = $('div#validation-error');
 
-// 単一パスワード生成結果表示エリア
+// 単一文字列生成結果表示エリア
 const $generate_result = $('div#generate-result');
-// 単一パスワード生成結果コピーボタン
+// 単一文字列生成結果コピーボタン
 const $password_copy_btn = $('button[name="password_copy"]');
 
-// 複数パスワードの個数表示エリア
+// 複数文字列の個数表示エリア
 const $bulk_value_label = $('#staticBulkPassword span#blk_value');
-// 複数パスワード生成結果表示エリア
+// 複数文字列の生成結果表示エリア
 const $bulk_generate_result = $('div#bulk-generate-result');
-// 複数パスワード格納テキストボックス
+// 複数文字列の格納テキストボックス
 const $bulk_textarea = $bulk_generate_result.find('textarea[name="bulk_password"]');
 
 // コンテンツ表示のアニメーション速度
@@ -157,11 +157,11 @@ const set_option = () => {
 	return opt;
 };
 
-// 生成パスワード格納
+// 生成文字列の格納変数
 let password;
 
 /**
- * 単一パスワードの生成ボタンクリック
+ * 単一文字列の生成ボタンクリック
  */
 $generate_btn.click(() => {
 	$validation_error.hide();
@@ -190,7 +190,7 @@ $generate_btn.click(() => {
 });
 
 /**
- * 複数パスワードの生成ボタンクリック
+ * 複数文字列の生成ボタンクリック
  */
 $bulk_generate_btn.click(function(){
 	new Promise((resolve) => {

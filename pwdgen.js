@@ -15,14 +15,14 @@ const MISLEAD_SYMBOLS = '0OcoIl1vyQq9';
 // 乱数マッピングアドレス選出用のランダム配列の要素数
 const CRYPT_GENERATE_COUNT= 10;
 
-// 単一パスワード選出用のパスワード生成個数 (この中からランダムで一つ選んで返却する)
+// 単一文字列選出用の文字列生成個数 (この中からランダムで一つ選んで返却する)
 const PWD_GENERATE_COUNT = 10;
 
-// パスワード文字列長の最小値/最大値
+// 生成文字列長 最小値/最大値
 const PWD_LEN_MIN = 4;
 const PWD_LEN_MAX = 256;
 
-// 複数パスワード生成個数の最小値/最大値
+// 複数文字列の生成個数 最小値/最大値
 const PWD_BULK_MIN = 1;
 const PWD_BULK_MAX = 10000;
 
@@ -167,7 +167,7 @@ function validation(opt){
 		}
 
 		if(opt.length > max_length){
-			return `指定の条件では${opt.length}文字のパスワードを生成できません。`;
+			return `指定の条件では${opt.length}文字の文字列を生成できません。`;
 		}
 	}
 
@@ -244,7 +244,7 @@ function filter_use_characters(opt){
 }
 
 /**
- * パスワード生成
+ * 文字列生成
  *
  * @param {string} algo
  * @param {Number} len
@@ -282,7 +282,7 @@ function generate(algo, len, use_chars, is_unique){
 }
 
 /**
- * 単一のパスワード生成
+ * 単一の文字列生成
  *
  * @param {OPTION} opt
  * @returns {string|null}
@@ -303,7 +303,7 @@ function password_generate(opt){
 }
 
 /**
- * 複数のパスワード生成
+ * 複数の文字列生成
  *
  * @param {OPTION} opt
  * @param {Number} count
