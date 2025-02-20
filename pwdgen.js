@@ -324,10 +324,8 @@ function bulk_password_generate(opt, count){
 
 	const passwords = [];
 	for(let i = 0; i < count; i++){
-		// たまに文字種配列の順番を入れ替え
-		const shuffle = Math.floor(Math.random() * 100);
-		// 20%の確率で入れ替え
-		if(shuffle < 20)
+		// 文字種配列の順番を20%の確率で入れ替え
+		if(Math.floor(Math.random() * 100) < 20)
 			use_chars = array_shuffle(use_chars);
 
 		passwords.push(generate(opt.algorithm, opt.length, use_chars, opt.unique));
