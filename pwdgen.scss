@@ -4,11 +4,16 @@
 $footer_height: 36px;
 
 body {
-	max-width: 720px;
 	margin: 16px auto;
 
 	font-family: "Noto Sans JP", sans-serif;
 	font-size: 0.93rem;
+}
+
+@media (min-width: 719.98px) {
+	body {
+		max-width: 720px;
+	}
 }
 
 h1 {
