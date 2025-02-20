@@ -73,8 +73,7 @@ footer {
 }
 
 #content {
-	min-height: calc(100vh - $footer_height);
-	padding-bottom: calc($footer_height + 16px) !important;
+	padding-bottom: $footer_height + 16px !important;
 
 	#bulk-generate-result {
 		textarea {

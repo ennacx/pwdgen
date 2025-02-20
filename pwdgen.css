@@ -46,8 +46,7 @@ footer {
       display: none; }
 
 #content {
-  min-height: calc(100vh - $footer_height);
-  padding-bottom: calc($footer_height + 16px) !important; }
+  padding-bottom: 52px !important; }
   #content #bulk-generate-result textarea {
     max-height: 24lh;
     field-sizing: content;
