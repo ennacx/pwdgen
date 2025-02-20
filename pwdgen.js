@@ -15,6 +15,9 @@ const MISLEAD_SYMBOLS = '0OcoIl1vyQq9';
 // 乱数マッピングアドレス選出用のランダム配列の要素数
 const CRYPT_GENERATE_COUNT= 10;
 
+// 単一パスワード選出用のパスワード生成個数 (この中からランダムで一つ選んで返却する)
+const PWD_GENERATE_COUNT = 10;
+
 // パスワード文字列長の最小値/最大値
 const PWD_LEN_MIN = 4;
 const PWD_LEN_MAX = 256;
@@ -124,6 +127,10 @@ function validation(opt){
 		return `文字数は${PWD_LEN_MIN}以上${PWD_LEN_MAX}以下の制限があります。`;
 	}
 
+	if(opt.use_type !== 'default' && opt.use_type !== 'hex'){
+		return "形式が不正です。文字種を再選択してください。";
+	}
+
 	if(opt.algorithm !== 'crypt' && opt.algorithm !== 'math'){
 		return "アルゴリズムが不正です。";
 	}
@@ -149,8 +156,6 @@ function validation(opt){
 		} else if(opt.use_type === 'hex'){
 			if(opt.hex)
 				max_length += 16;
-		} else{
-			return "形式が不正です。文字種を再選択してください。";
 		}
 
 		if(opt.mislead){
@@ -158,7 +163,7 @@ function validation(opt){
 		}
 
 		if(max_length <= 0){
-			return "形式が不正です。文字種を再選択してください。";
+			return "文字種を再選択してください。";
 		}
 
 		if(opt.length > max_length){
@@ -290,7 +295,11 @@ function password_generate(opt){
 
 	const use_chars = filter_use_characters(opt);
 
-	return generate(opt.algorithm, opt.length, use_chars, opt.unique);
+	const temp = bulk_password_generate(opt, PWD_GENERATE_COUNT);
+	if(temp === null)
+		return null;
+
+	return temp[Math.floor(Math.random() * PWD_GENERATE_COUNT)];
 }
 
 /**
@@ -311,10 +320,16 @@ function bulk_password_generate(opt, count){
 	else if(count > PWD_BULK_MAX)
 		count = PWD_BULK_MAX;
 
-	const use_chars = filter_use_characters(opt);
+	let use_chars = filter_use_characters(opt);
 
 	const passwords = [];
 	for(let i = 0; i < count; i++){
+		// たまに文字種配列の順番を入れ替え
+		const shuffle = Math.floor(Math.random() * 100);
+		// 20%の確率で入れ替え
+		if(shuffle < 20)
+			use_chars = array_shuffle(use_chars);
+
 		passwords.push(generate(opt.algorithm, opt.length, use_chars, opt.unique));
 	}
 
