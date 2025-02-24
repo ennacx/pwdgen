@@ -70,7 +70,8 @@ footer {
     display: none;
     margin-top: 16px; }
   #content #generate-password {
-    overflow: hidden; }
+    overflow: hidden;
+    font-family: "Atkinson Hyperlegible Mono", monospace; }
   #content .error {
     font-size: 0.88rem;
     color: #d33333; }
