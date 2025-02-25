@@ -91,6 +91,7 @@ footer .disclaimer p {
 }
 #content #generate-password {
   overflow: hidden;
+  font-family: "Atkinson Hyperlegible Mono", monospace;
 }
 #content .error {
   font-size: 0.88rem;
