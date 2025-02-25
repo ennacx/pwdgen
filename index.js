@@ -221,12 +221,16 @@ $bulk_generate_btn.click(function(){
 			$bulk_textarea.val(temp);
 
 			$bulk_value_label.text(val.toLocaleString());
-			(new bootstrap.Modal('#bulk-generate-result-modal')).show();
 		}
+	}).then(() => {
+		const modal = new bootstrap.Modal('#bulk-generate-result-modal');
+		modal.show();
 	}).then(() => {
 		$bulk_generate_btn.prop('disabled', false);
 	}).catch(() => {
 		$bulk_generate_btn.prop('disabled', false);
+
+		window.alert("複数文字列の生成に失敗しました。");
 	});
 });
 
@@ -247,7 +251,7 @@ $password_copy_btn.click(function(){
 			}, 3000);
 		},
 		() => {
-			alert("コピーに失敗しました。");
+			window.alert("コピーに失敗しました。");
 		});
 });
 
@@ -261,14 +265,14 @@ if(!navigator.clipboard){
  */
 $len_box.on('keyup change', function(e){
 	const val = $(this).val();
-	let newval = (val === '' || isNaN(val)) ? PWD_LEN_MIN : parseInt(val);
-	if(newval < PWD_LEN_MIN)
-		newval = PWD_LEN_MIN;
-	else if(newval > PWD_LEN_MAX)
-		newval = PWD_LEN_MAX;
+	let new_val = (val === '' || isNaN(val)) ? PWD_LEN_MIN : parseInt(val);
+	if(new_val < PWD_LEN_MIN)
+		new_val = PWD_LEN_MIN;
+	else if(new_val > PWD_LEN_MAX)
+		new_val = PWD_LEN_MAX;
 
-	$slider.val(newval);
-	$len_box.val(newval);
+	$slider.val(new_val);
+	$len_box.val(new_val);
 });
 
 /**
@@ -288,7 +292,7 @@ const initializeSlider = () => {
 initializeSlider();
 
 // 登録記号一覧の配列
-const symbols     = SYMBOL.split('');
+const symbols = SYMBOL.split('');
 // 登録記号(全角)一覧の配列
 const symbols_zen = SYMBOL_ZEN.split('');
 

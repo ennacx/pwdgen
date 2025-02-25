@@ -80,9 +80,9 @@ function array_unique(array){
 	const unique_array = [];
 	const known_elements = {};
 	for(let i = 0, maxi = array.length; i < maxi; i++){
-		if(array[i] in known_elements){
+		// 重複時
+		if(array[i] in known_elements)
 			continue;
-		}
 
 		unique_array.push(array[i]);
 		known_elements[array[i]] = true;
@@ -119,21 +119,17 @@ function array_shuffle(array){
  */
 function validation(opt){
 
-	if(!opt.alpha_u && !opt.alpha_l && !opt.numeric && !opt.symbol && !opt.hex){
+	if(!opt.alpha_u && !opt.alpha_l && !opt.numeric && !opt.symbol && !opt.hex)
 		return "文字種を選択して下さい。";
-	}
 
-	if(opt.length < PWD_LEN_MIN || opt.length > PWD_LEN_MAX){
+	if(opt.length < PWD_LEN_MIN || opt.length > PWD_LEN_MAX)
 		return `文字数は${PWD_LEN_MIN}以上${PWD_LEN_MAX}以下の制限があります。`;
-	}
 
-	if(opt.use_type !== 'default' && opt.use_type !== 'hex'){
+	if(opt.use_type !== 'default' && opt.use_type !== 'hex')
 		return "形式が不正です。文字種を再選択してください。";
-	}
 
-	if(opt.algorithm !== 'crypt' && opt.algorithm !== 'math'){
+	if(opt.algorithm !== 'crypt' && opt.algorithm !== 'math')
 		return "アルゴリズムが不正です。";
-	}
 
 	if(opt.unique){
 		let max_length = 0;
@@ -158,17 +154,14 @@ function validation(opt){
 				max_length += 16;
 		}
 
-		if(opt.mislead){
+		if(opt.mislead)
 			max_length -= filter_mislead_symbols(opt).length;
-		}
 
-		if(max_length <= 0){
+		if(max_length <= 0)
 			return "文字種を再選択してください。";
-		}
 
-		if(opt.length > max_length){
+		if(opt.length > max_length)
 			return `指定の条件では${opt.length}文字の文字列を生成できません。`;
-		}
 	}
 
 	opt.validate = true;
@@ -211,14 +204,14 @@ function filter_mislead_symbols(opt){
  */
 function filter_use_characters(opt){
 
-	let use_chars_str = '';
+	let use_chars = '';
 	if(opt.use_type === 'default'){
 		if(opt.alpha_u)
-			use_chars_str += ALPHA_U;
+			use_chars += ALPHA_U;
 		if(opt.alpha_l)
-			use_chars_str += ALPHA_L;
+			use_chars += ALPHA_L;
 		if(opt.numeric)
-			use_chars_str += NUMERIC;
+			use_chars += NUMERIC;
 		if(opt.symbol){
 			let temp = SYMBOL;
 
@@ -228,19 +221,19 @@ function filter_use_characters(opt){
 				}
 			}
 
-			use_chars_str += temp;
+			use_chars += temp;
 		}
 	} else if(opt.use_type === 'hex'){
 		if(opt.hex)
-			use_chars_str += HEXADECIMAL;
+			use_chars += HEXADECIMAL;
 	}
 
 	const mislead_symbols = filter_mislead_symbols(opt);
 	for(let i = 0; i < mislead_symbols.length; i++){
-		use_chars_str = use_chars_str.replace(mislead_symbols[i], '');
+		use_chars = use_chars.replace(mislead_symbols[i], '');
 	}
 
-	return array_shuffle(use_chars_str.split(''));
+	return array_shuffle(use_chars.split(''));
 }
 
 /**
@@ -259,12 +252,16 @@ function generate(algo, len, use_chars, is_unique){
 	let password = '';
 	while(password.length < len){
 		let char;
+
+		// Crypt
 		if(algo === 'crypt'){
 			const arr = Array.from(crypto.getRandomValues(new BigUint64Array(CRYPT_GENERATE_COUNT)));
 			const bigint = arr[Math.floor(Math.random() * CRYPT_GENERATE_COUNT)];
 
 			char = use_chars[Number(bigint % BigInt(use_chars_len))];
-		} else if(algo === 'math'){
+		}
+		// Math
+		else if(algo === 'math'){
 			char = use_chars[Math.floor(Math.random() * use_chars_len)];
 		}
 
@@ -289,11 +286,8 @@ function generate(algo, len, use_chars, is_unique){
  */
 function password_generate(opt){
 
-	if(!opt.validate){
+	if(!opt.validate)
 		return null;
-	}
-
-	const use_chars = filter_use_characters(opt);
 
 	const temp = bulk_password_generate(opt, PWD_GENERATE_COUNT);
 	if(temp === null)
@@ -311,9 +305,8 @@ function password_generate(opt){
  */
 function bulk_password_generate(opt, count){
 
-	if(!opt.validate || count < 1){
+	if(!opt.validate || count < 1)
 		return null;
-	}
 
 	if(count < PWD_BULK_MIN)
 		count = PWD_BULK_MIN;
