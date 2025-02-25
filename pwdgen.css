@@ -2,28 +2,36 @@
 body {
   margin: 16px auto;
   font-family: "Noto Sans JP", sans-serif;
-  font-size: 0.93rem; }
+  font-size: 0.93rem;
+}
 
 @media (min-width: 719.98px) {
   body {
-    max-width: 720px; } }
+    max-width: 720px;
+  }
+}
 h1 {
-  margin-bottom: 8px; }
-  h1 a {
-    cursor: grab;
-    text-decoration: none;
-    color: black; }
+  margin-bottom: 8px;
+}
+h1 a {
+  cursor: grab;
+  text-decoration: none;
+  color: black;
+}
 
 h2 {
   margin-bottom: 16px;
   font-size: 1.1rem;
-  color: green; }
+  color: green;
+}
 
 #subheader {
-  margin-bottom: 24px; }
-  #subheader p {
-    font-size: 0.78rem;
-    color: #878787; }
+  margin-bottom: 24px;
+}
+#subheader p {
+  font-size: 0.78rem;
+  color: #878787;
+}
 
 footer {
   text-align: right;
@@ -37,50 +45,66 @@ footer {
   padding: 8px 16px;
   position: fixed;
   bottom: 0;
-  left: 0; }
-  footer p a {
-    text-decoration: none; }
-  footer p i {
-    margin-right: 4px; }
-  footer .disclaimer {
-    color: #aaaacc; }
-    footer .disclaimer p {
-      display: none; }
+  left: 0;
+}
+footer p a {
+  text-decoration: none;
+}
+footer p i {
+  margin-right: 4px;
+}
+footer .disclaimer {
+  color: #aaaacc;
+}
+footer .disclaimer p {
+  display: none;
+}
 
 #content {
-  padding-bottom: 52px !important; }
-  #content #symbol-info {
-    display: none;
-    margin: 8px 0 12px;
-    font-size: 0.88rem; }
-    #content #symbol-info p {
-      margin-bottom: 0; }
-    #content #symbol-info .ignore-symbol-input {
-      margin-top: 6px; }
-  #content #symbol-samples,
-  #content #mislead-samples {
-    background: #fff0f2;
-    border: 1px solid #666666;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-family: "Atkinson Hyperlegible Mono", monospace; }
-  #content #mislead-samples {
-    font-size: 0.88rem; }
-  #content #validation-error, #content #generate-result {
-    display: none;
-    margin-top: 16px; }
-  #content #generate-password {
-    overflow: hidden; }
-  #content .error {
-    font-size: 0.88rem;
-    color: #d33333; }
-  #content .algo-err-msg {
-    display: none; }
+  padding-bottom: 52px !important;
+}
+#content #symbol-info {
+  display: none;
+  margin: 8px 0 12px;
+  font-size: 0.88rem;
+}
+#content #symbol-info p {
+  margin-bottom: 0;
+}
+#content #symbol-info .ignore-symbol-input {
+  margin-top: 6px;
+}
+#content #symbol-samples,
+#content #mislead-samples {
+  background: #fff0f2;
+  border: 1px solid #666666;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-family: "Atkinson Hyperlegible Mono", monospace;
+}
+#content #mislead-samples {
+  font-size: 0.88rem;
+}
+#content #validation-error, #content #generate-result {
+  display: none;
+  margin-top: 16px;
+}
+#content #generate-password {
+  overflow: hidden;
+}
+#content .error {
+  font-size: 0.88rem;
+  color: #d33333;
+}
+#content .algo-err-msg {
+  display: none;
+}
 
 #bulk-generate-result textarea {
   font-family: "Atkinson Hyperlegible Mono", monospace;
   max-height: 24lh;
   field-sizing: content;
-  resize: none; }
+  resize: none;
+}
 
 /*# sourceMappingURL=pwdgen.css.map */
