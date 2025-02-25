@@ -153,13 +153,18 @@ footer {
 		display: none;
 	}
 }
+#bulk-generate-result-modal {
+	#bulk-generate-result {
+		& textarea {
+			font-family: $mono_font;
 
-#bulk-generate-result {
-	& textarea {
-		font-family: $mono_font;
+			max-height: 24lh;
+			field-sizing: content;
+			resize: none;
+		}
+	}
 
-		max-height: 24lh;
-		field-sizing: content;
-		resize: none;
+	i {
+		margin-right: 8px;
 	}
 }

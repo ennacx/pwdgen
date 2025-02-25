@@ -119,11 +119,14 @@ footer ul.copy-links li i {
   display: none;
 }
 
-#bulk-generate-result textarea {
+#bulk-generate-result-modal #bulk-generate-result textarea {
   font-family: "Atkinson Hyperlegible Mono", monospace;
   max-height: 24lh;
   field-sizing: content;
   resize: none;
+}
+#bulk-generate-result-modal i {
+  margin-right: 8px;
 }
 
 /*# sourceMappingURL=pwdgen.css.map */

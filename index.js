@@ -36,11 +36,13 @@ const $generate_result = $('div#generate-result');
 const $password_copy_btn = $('button[name="password_copy"]');
 
 // 複数文字列の個数表示エリア
-const $bulk_value_label = $('#staticBulkPassword span#blk_value');
+const $bulk_value_label = $('#bulk-generate-result-modal span#blk_value');
 // 複数文字列の生成結果表示エリア
-const $bulk_generate_result = $('div#bulk-generate-result');
+const $bulk_generate_result = $('#bulk-generate-result-modal div#bulk-generate-result');
 // 複数文字列の格納テキストボックス
 const $bulk_textarea = $bulk_generate_result.find('textarea[name="bulk_password"]');
+// 複数文字列のダウンロードボタン
+const $bulk_download = $('#bulk-generate-result-modal a#bulk-generate-download');
 
 // コンテンツ表示のアニメーション速度
 const anim_duration = 100;
@@ -219,7 +221,7 @@ $bulk_generate_btn.click(function(){
 			$bulk_textarea.val(temp);
 
 			$bulk_value_label.text(val.toLocaleString());
-			(new bootstrap.Modal('#staticBulkPassword')).show();
+			(new bootstrap.Modal('#bulk-generate-result-modal')).show();
 		}
 	}).then(() => {
 		$bulk_generate_btn.prop('disabled', false);
@@ -236,9 +238,12 @@ $password_copy_btn.click(function(){
 
 	navigator.clipboard.writeText(password).then(
 		() => {
+			$(this).prop('disabled', true);
 			$label.removeClass('bi-copy').addClass('bi-check2');
+
 			setTimeout(() => {
 				$label.removeClass('bi-check2').addClass('bi-copy');
+				$(this).prop('disabled', false);
 			}, 3000);
 		},
 		() => {
@@ -304,4 +309,28 @@ $ignore_symbol_box.on('change', function(e){
 	}
 
 	$(this).val((temp.length > 0) ? array_unique(temp).join('').replace(new RegExp(ignore_symbol_regexp_pattern, 'g'), '') : '');
+});
+
+/**
+ * 複数文字列のダウンロードボタンクリック
+ */
+$bulk_download.click(function(){
+	$(this).prop('disabled', true);
+
+	const val = $bulk_textarea.val();
+	const len = val.split("\n").length;
+
+	$(this).prop({
+		download: `bulk-strings_${len}.txt`,
+		href: `data:text/plain;charset=utf-8,${encodeURIComponent(val)}`
+	});
+
+	setTimeout(
+		() => {
+			$(this).prop('disabled', false);
+		},
+		1000
+	);
+
+	return true;
 });

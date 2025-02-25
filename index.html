@@ -151,11 +151,11 @@
         </div>
     </footer>
 
-    <div id="staticBulkPassword" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBulkPasswordLabel" aria-hidden="true">
+    <div id="bulk-generate-result-modal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="#bulk-generate-result-modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="staticBulkPasswordLabel" class="modal-title">文字列&nbsp;<span id="blk_value"></span>個&nbsp;同時生成結果</h5>
+                    <h5 id="#bulk-generate-result-modalLabel" class="modal-title">文字列&nbsp;<span id="blk_value"></span>個&nbsp;同時生成結果</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -164,6 +164,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <a id="bulk-generate-download" class="btn btn-outline-primary"><i class="bi bi-download"></i>Download</a>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
