@@ -65,7 +65,7 @@ footer {
 		}
 
 		i {
-			margin-right: 4px;
+			margin-right: 6px;
 		}
 	}
 
@@ -75,6 +75,30 @@ footer {
 		// 表示はしない
 		p {
 			display: none;
+		}
+	}
+
+	ul.copy-links {
+		list-style: none;
+
+		& li {
+			padding: 0 4px;
+
+			&:not(:last-child) {
+				border-right: 1px solid #a5a5a5;
+			}
+
+			a {
+				text-decoration: none;
+			}
+
+			a:hover {
+				color: #6585ff;
+			}
+
+			i {
+				margin-right: 4px;
+			}
 		}
 	}
 }

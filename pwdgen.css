@@ -51,13 +51,31 @@ footer p a {
   text-decoration: none;
 }
 footer p i {
-  margin-right: 4px;
+  margin-right: 6px;
 }
 footer .disclaimer {
   color: #aaaacc;
 }
 footer .disclaimer p {
   display: none;
+}
+footer ul.copy-links {
+  list-style: none;
+}
+footer ul.copy-links li {
+  padding: 0 4px;
+}
+footer ul.copy-links li:not(:last-child) {
+  border-right: 1px solid #a5a5a5;
+}
+footer ul.copy-links li a {
+  text-decoration: none;
+}
+footer ul.copy-links li a:hover {
+  color: #6585ff;
+}
+footer ul.copy-links li i {
+  margin-right: 4px;
 }
 
 #content {
