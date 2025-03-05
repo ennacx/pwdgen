@@ -24,22 +24,32 @@ jobs:
       with:
         node-version: '22.x'
 
-    - name: Run main
+    - name: Setup module
+      run: |
+        npm install -g html-minifier
+        npm install -g uglify-js
+        npm install -g clean-css-cli
+
+    - name: Make directory
       run: |
         mkdir -p ./dist
-        echo "dist directory made."
-        npm install -g html-minifier
+
+    - name: HTML minifier
+      run: |
         html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype ./index.html -o ./dist/index.html
-        echo "Installed html-minifier and minimize built HTML."
-        npm install -g uglify-js
+
+    - name: JS minifier
+      run: |
         uglifyjs ./pwdgen.js -c -m --output ./dist/pwdgen.js
         uglifyjs ./index.js -c -m --output ./dist/index.js
-        echo "Installed uglify and minimize built JS."
-        npm install -g clean-css-cli
+
+    - name: CSS minifier
+      run: |
         cleancss -o ./dist/pwdgen.css ./pwdgen.css
-        echo "Installed clean-css-cli and minimize built CSS."
+
+    - name: Resources cory
+      run: |
         cp ./favicon.ico ./dist/
-        echo "Pages copied."
 
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
