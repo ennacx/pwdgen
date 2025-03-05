@@ -18,12 +18,15 @@ body {
 	}
 }
 
+a {
+	cursor: grab;
+	text-decoration: none;
+}
+
 h1 {
 	margin-bottom: 8px;
 
 	a {
-		cursor: grab;
-		text-decoration: none;
 		color: black;
 	}
 }
@@ -51,10 +54,6 @@ footer {
 	left: 0;
 
 	p {
-		a {
-			text-decoration: none;
-		}
-
 		i {
 			margin-right: 6px;
 		}

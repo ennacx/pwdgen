@@ -10,12 +10,15 @@ body {
     max-width: 720px;
   }
 }
+a {
+  cursor: grab;
+  text-decoration: none;
+}
+
 h1 {
   margin-bottom: 8px;
 }
 h1 a {
-  cursor: grab;
-  text-decoration: none;
   color: black;
 }
 
@@ -38,9 +41,6 @@ footer {
   position: fixed;
   bottom: 0;
   left: 0;
-}
-footer p a {
-  text-decoration: none;
 }
 footer p i {
   margin-right: 6px;
