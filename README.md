@@ -29,6 +29,10 @@ You can select multiple character types below. You cannot leave all character ty
   - Only hexadecimal digits between ```0``` and ```F``` are allowed.
   - **This character type is exclusive with other character types.**
   - If you select Hexadecimal, you cannot select the "```紛らわしい文字種は使用しない```" option.
+- ```UUID```
+  - This conforms to Version.4 of Universally Unique Identifier Version 4.
+  - **It is assumed that the environment is capable of using the ```Crypt``` algorithm.**
+  - **This character type is exclusive of all other choices.**
 
 ### 3. If you want to set generation conditions
 You can currently set two conditions.
@@ -62,8 +66,8 @@ Currently, it supports simultaneous generation of 100, 1000, and 10000.<br>
 (This process runs within your browser and does not affect the hosting server, but it may cause your browser to stop working, so use it with caution.🤪)
 
 ## Disclaimer🥺
-できるだけ複雑なランダム文字列を生成するように努めていますが、使用に際しては自己責任でお願いいたします。<br>
-We try to generate as complex random strings as possible, but use at your own risk.
+できるだけ再現されにくいランダム文字列を生成するように努めていますが、使用に際しては自己責任でお願いいたします。<br>
+We strive to generate random strings that are as challenging to reproduce as possible, but please use them at your own risk.
 
 万が一、本ツールの使用によりトラブルが発生した場合でも、私たちは一切の責任を負いません。<br>
 In the unlikely event that any trouble occurs as a result of using this tool, we will not be held responsible in any way.
