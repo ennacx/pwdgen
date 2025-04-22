@@ -39,6 +39,7 @@ const PWD_BULK_MAX = 10000;
  *      numeric: boolean,
  *      symbol: boolean,
  *      hex: boolean,
+ *      uuid: boolean,
  *
  *      unique: boolean,
  *      mislead: boolean,
@@ -59,6 +60,7 @@ const OPTION = {
 	numeric: true,
 	symbol: false,
 	hex: false,
+	uuid: false,
 
 	unique: false,
 	mislead: false,
@@ -119,13 +121,13 @@ function array_shuffle(array){
  */
 function validation(opt){
 
-	if(!opt.alpha_u && !opt.alpha_l && !opt.numeric && !opt.symbol && !opt.hex)
+	if(!opt.alpha_u && !opt.alpha_l && !opt.numeric && !opt.symbol && !opt.hex && !opt.uuid)
 		return "文字種を選択して下さい。";
 
 	if(opt.length < PWD_LEN_MIN || opt.length > PWD_LEN_MAX)
 		return `文字数は${PWD_LEN_MIN}以上${PWD_LEN_MAX}以下の制限があります。`;
 
-	if(opt.use_type !== 'default' && opt.use_type !== 'hex')
+	if(opt.use_type !== 'default' && opt.use_type !== 'hex' && opt.use_type !== 'uuid')
 		return "形式が不正です。文字種を再選択してください。";
 
 	if(opt.algorithm !== 'crypt' && opt.algorithm !== 'math')
@@ -149,8 +151,8 @@ function validation(opt){
 				}
 				max_length += temp.length;
 			}
-		} else if(opt.use_type === 'hex'){
-			if(opt.hex)
+		} else if(opt.use_type === 'hex' || opt.use_type === 'uuid'){
+			if(opt.hex || opt.uuid)
 				max_length += 16;
 		}
 
@@ -190,6 +192,9 @@ function filter_mislead_symbols(opt){
 		} else if(opt.use_type === 'hex'){
 			if(opt.hex)
 				mislead_symbols += MISLEAD_SYMBOLS.replace(/[^0-9a-fA-F]/g, '');
+		} else if(opt.use_type === 'uuid'){
+			if(opt.uuid)
+				mislead_symbols += MISLEAD_SYMBOLS.replace(/[^0-9a-fA-F]/g, '');
 		}
 	}
 
@@ -223,8 +228,8 @@ function filter_use_characters(opt){
 
 			use_chars += temp;
 		}
-	} else if(opt.use_type === 'hex'){
-		if(opt.hex)
+	} else if(opt.use_type === 'hex' || opt.use_type === 'uuid'){
+		if(opt.hex || opt.uuid)
 			use_chars += HEXADECIMAL;
 	}
 
@@ -325,4 +330,31 @@ function bulk_password_generate(opt, count){
 	}
 
 	return passwords;
+}
+
+/**
+ * 単一のUUID生成
+ *
+ * @returns {string}
+ */
+function uuid_generate(){
+
+	return crypto.randomUUID();
+}
+
+/**
+ * 複数ののUUID生成
+ *
+ * @param {Number} count
+ * @returns {string[]}
+ */
+function bulk_uuid_generate(count){
+
+	const uuids = [];
+
+	for(let i = 0; i < count; i++){
+		uuids.push(uuid_generate());
+	}
+
+	return uuids;
 }

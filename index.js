@@ -8,15 +8,19 @@ const $al_l_chk = $('input#alpha_l');
 const $num_chk  = $('input#num');
 const $sym_chk  = $('input#symbol');
 const $hex_chk  = $('input#hex');
+const $uuid_chk  = $('input#uuid');
 
 // オプションチェックボックス
 const $unq_chk  = $('input#unique');
 const $mis_chk  = $('input#mislead');
 
-// 指定文字種が16進数かそれ以外かを判定するhiddenタグ
+// 指定文字種が16進数かUUIDか、またはそれ以外かを判定するhiddenタグ
 const $use_type_box = $('input[name="use_type"]');
 // 使用したくない記号入力
 const $ignore_symbol_box = $('input[name="ignore_symbols"]');
+
+// アルゴリズムチェックボックス
+const $algo_radio = $('input[name="algorithm"]');
 
 // ボタン類
 const $generate_btn = $('button[name="gen"]');
@@ -55,10 +59,15 @@ $len_box.attr('max', PWD_LEN_MAX);
 
 // Crypt実装チェック
 if(!window.crypto || typeof window.crypto.getRandomValues !== 'function'){
-	$('input[name="algorithm"]').prop('checked', false);
+	// UUIDの生成無効化
+	$uuid_chk.prop('disabled', true);
+
+	// アルゴリズム選択ラジオボタン無効化 (Mathを選択状態にする)
+	$algo_radio.prop('checked', false);
 	$('input[name="algorithm"][value="crypt"]').prop('disabled', true);
 	$('input[name="algorithm"][value="math"]').prop('checked', true);
 
+	// 警告メッセージ表示
 	$algo_err.show(anim_duration);
 }
 
@@ -86,7 +95,16 @@ $sym_chk.change(changeSymbolCheck);
  */
 $('.default-check').change(function(){
 	if($(this).prop('checked')){
-		$('.hex-check').prop('checked', false);
+		$slider.prop('disabled', false);
+		$len_box.prop('readonly', false);
+
+		$hex_chk.prop('checked', false);
+		$uuid_chk.prop('checked', false);
+
+		$unq_chk.prop('disabled', false);
+		$mis_chk.prop('disabled', false);
+
+		$algo_radio.prop('disabled', false);
 
 		$use_type_box.val('default');
 	}
@@ -96,10 +114,17 @@ $('.default-check').change(function(){
  */
 $('.hex-check').change(function(){
 	if($(this).prop('checked')){
-		$('.default-check').prop('checked', false);
-		$symbol_info.hide();
+		$slider.prop('disabled', false);
+		$len_box.prop('readonly', false);
 
+		$('.default-check').prop('checked', false);
+		$uuid_chk.prop('checked', false);
+		$symbol_info.hide(anim_duration);
+
+		$unq_chk.prop('disabled', false);
 		$mis_chk.prop('checked', false).prop('disabled', true);
+
+		$algo_radio.prop('disabled', false);
 
 		$use_type_box.val('hex');
 	} else{
@@ -107,6 +132,43 @@ $('.hex-check').change(function(){
 		$al_l_chk.prop('checked', true);
 		$num_chk.prop('checked', true);
 
+		$mis_chk.prop('disabled', false);
+
+		$algo_radio.prop('disabled', false);
+
+		$use_type_box.val('default');
+	}
+});
+/**
+ * "UUID"のチェックボックス制御
+ */
+$('.uuid-check').change(function(){
+	if($(this).prop('checked')){
+		$len_box.val('36').prop('readonly', true).change(); // スライダーより前に設定して連動させてから無効化
+		$slider.prop('disabled', true);
+
+		$('.default-check').prop('checked', false);
+		$hex_chk.prop('checked', false);
+		$symbol_info.hide(anim_duration);
+
+		$unq_chk.prop('checked', false).prop('disabled', true);
+		$mis_chk.prop('checked', false).prop('disabled', true);
+
+		$('input[name="algorithm"][value="crypt"]').prop('checked', true);
+		$algo_radio.prop('disabled', true);
+
+		$use_type_box.val('uuid');
+	} else{
+		$slider.prop('disabled', false);
+		$len_box.prop('readonly', false);
+
+		$al_u_chk.prop('checked', true);
+		$al_l_chk.prop('checked', true);
+		$num_chk.prop('checked', true);
+
+		$algo_radio.prop('disabled', false);
+
+		$unq_chk.prop('disabled', false);
 		$mis_chk.prop('disabled', false);
 
 		$use_type_box.val('default');
@@ -126,6 +188,7 @@ $('.hex-check').change(function(){
  *      numeric: boolean,
  *      symbol: boolean,
  *      hex: boolean,
+ *      uuid: boolean,
  *
  *      unique: boolean,
  *      mislead: boolean,
@@ -148,6 +211,7 @@ const set_option = () => {
 	opt.numeric = $num_chk.prop('checked');
 	opt.symbol  = $sym_chk.prop('checked');
 	opt.hex     = $hex_chk.prop('checked');
+	opt.uuid    = $uuid_chk.prop('checked');
 
 	opt.unique  = $unq_chk.prop('checked');
 	opt.mislead = $mis_chk.prop('checked');
@@ -181,7 +245,7 @@ $generate_btn.click(() => {
 		$validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
 		$validation_error.show(anim_duration);
 	} else{
-		password = password_generate(opt);
+		password = (!opt.uuid) ? password_generate(opt) : uuid_generate();
 		if(password !== null){
 			$generate_result.find('div#generate-password').text(password);
 			$generate_result.show(anim_duration);
@@ -213,14 +277,14 @@ $bulk_generate_btn.click(function(){
 			$validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
 			$validation_error.show(anim_duration);
 		} else{
-			const val = parseInt($(this).val());
-			const passwords = bulk_password_generate(opt, val);
+			const count = parseInt($(this).val());
+			const passwords = (!opt.uuid) ? bulk_password_generate(opt, count) : bulk_uuid_generate(count);
 			const temp = (passwords !== null) ? passwords.join("\n") : '';
 
 			$bulk_textarea.text(temp);
 			$bulk_textarea.val(temp);
 
-			$bulk_value_label.text(val.toLocaleString());
+			$bulk_value_label.text(count.toLocaleString());
 		}
 	}).then(() => {
 		const modal = new bootstrap.Modal('#bulk-generate-result-modal');
