@@ -82,6 +82,7 @@ $use_type_box.val(OPTION.use_type);
  * 文字種"記号"チェックボックス制御
  */
 const changeSymbolCheck = () => {
+
 	if($sym_chk.prop('checked')){
 		$symbol_info.show(anim_duration);
 	} else{
@@ -94,6 +95,8 @@ $sym_chk.change(changeSymbolCheck);
  * "16進数以外"の文字種チェックボックス制御
  */
 $('.default-check').change(function(){
+
+	// チェック
 	if($(this).prop('checked')){
 		$slider.prop('disabled', false);
 		$len_box.prop('readonly', false);
@@ -113,6 +116,8 @@ $('.default-check').change(function(){
  * "16進数"のチェックボックス制御
  */
 $('.hex-check').change(function(){
+
+	// チェック
 	if($(this).prop('checked')){
 		$slider.prop('disabled', false);
 		$len_box.prop('readonly', false);
@@ -127,7 +132,9 @@ $('.hex-check').change(function(){
 		$algo_radio.prop('disabled', false);
 
 		$use_type_box.val('hex');
-	} else{
+	}
+	// チェック解除
+	else{
 		$al_u_chk.prop('checked', true);
 		$al_l_chk.prop('checked', true);
 		$num_chk.prop('checked', true);
@@ -143,6 +150,8 @@ $('.hex-check').change(function(){
  * "UUID"のチェックボックス制御
  */
 $('.uuid-check').change(function(){
+
+	// チェック
 	if($(this).prop('checked')){
 		$len_box.val('36').prop('readonly', true).change(); // スライダーより前に設定して連動させてから無効化
 		$slider.prop('disabled', true);
@@ -158,7 +167,9 @@ $('.uuid-check').change(function(){
 		$algo_radio.prop('disabled', true);
 
 		$use_type_box.val('uuid');
-	} else{
+	}
+	// チェック解除
+	else{
 		$slider.prop('disabled', false);
 		$len_box.prop('readonly', false);
 
@@ -233,6 +244,8 @@ let copy_btn_timeout_id = null;
  * コピーボタンの有効化
  */
 const enable_copy_btn = () => {
+
+	// タイムアウト処理中の場合のみ処理
 	if(copy_btn_timeout_id !== null){
 		// コピーボタン有効化
 		$password_copy_btn.find('i').removeClass('bi-check2').addClass('bi-copy');
@@ -250,6 +263,7 @@ const enable_copy_btn = () => {
  * 単一文字列の生成ボタンクリック
  */
 $generate_btn.click(() => {
+
 	$validation_error.hide();
 	$validation_error.empty();
 
@@ -258,13 +272,18 @@ $generate_btn.click(() => {
 
 	const opt = set_option();
 
+	// バリデーション
 	const validate = validation(opt);
+
+	// バリデーションエラーあり
 	if(validate !== null){
 		$generate_result.hide();
 
 		$validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
 		$validation_error.show(anim_duration);
-	} else{
+	}
+	// バリデーションエラー無し
+	else{
 		password = (!opt.uuid) ? password_generate(opt) : uuid_generate();
 		if(password !== null){
 			$generate_result.find('div#generate-password').text(password);
@@ -281,6 +300,7 @@ $generate_btn.click(() => {
  * 複数文字列の生成ボタンクリック
  */
 $bulk_generate_btn.click(function(){
+
 	new Promise((resolve) => {
 		$bulk_generate_btn.prop('disabled', true);
 		resolve();
@@ -291,14 +311,19 @@ $bulk_generate_btn.click(function(){
 
 		const opt = set_option();
 
+		// バリデーション
 		const validate = validation(opt);
+
+		// バリデーションエラーあり
 		if(validate !== null){
 			$bulk_textarea.text('');
 			$bulk_textarea.val('');
 
 			$validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
 			$validation_error.show(anim_duration);
-		} else{
+		}
+		// バリデーションエラー無し
+		else{
 			const count = parseInt($(this).val());
 			const passwords = (!opt.uuid) ? bulk_password_generate(opt, count) : bulk_uuid_generate(count);
 			const temp = (passwords !== null) ? passwords.join("\n") : '';
@@ -324,7 +349,11 @@ $bulk_generate_btn.click(function(){
  * クリップボードコピーボタンクリック
  */
 $password_copy_btn.click(function(){
+
 	const $label = $(this).find('i');
+
+	// 再度ボタンが有効化になるまでの時間 (ms)
+	const enable_duration = 3000;
 
 	navigator.clipboard.writeText(password).then(
 		() => {
@@ -340,7 +369,7 @@ $password_copy_btn.click(function(){
 
 				// IDを初期化
 				copy_btn_timeout_id = null;
-			}, 3000);
+			}, enable_duration);
 		},
 		() => {
 			window.alert("コピーに失敗しました。");
@@ -356,12 +385,16 @@ if(!navigator.clipboard){
  * 文字列長入力フォームの入力
  */
 $len_box.on('keyup change', function(e){
+
 	const val = $(this).val();
+
+	// 入力数調整
 	let new_val = (val === '' || isNaN(val)) ? PWD_LEN_MIN : parseInt(val);
-	if(new_val < PWD_LEN_MIN)
+	if(new_val < PWD_LEN_MIN) {
 		new_val = PWD_LEN_MIN;
-	else if(new_val > PWD_LEN_MAX)
+	} else if(new_val > PWD_LEN_MAX){
 		new_val = PWD_LEN_MAX;
+	}
 
 	$slider.val(new_val);
 	$len_box.val(new_val);
@@ -395,12 +428,12 @@ const ignore_symbol_regexp_pattern = `[^${SYMBOL.replace('-', '\-').replace(']',
  * 含ませたくない記号入力フォームの内容変更
  */
 $ignore_symbol_box.on('change', function(e){
+
 	const val = $(this).val();
 	const temp = [];
-	for(let i in val){
-		const char = val[i];
-		const index = symbols_zen.indexOf(char);
 
+	for(let char of val){
+		const index = symbols_zen.indexOf(char);
 		temp.push((index >= 0) ? symbols[index] : char);
 	}
 
@@ -411,10 +444,14 @@ $ignore_symbol_box.on('change', function(e){
  * 複数文字列のダウンロードボタンクリック
  */
 $bulk_download.click(function(){
+
 	$(this).prop('disabled', true);
 
 	const val = $bulk_textarea.val();
 	const len = val.split("\n").length;
+
+	// 再度ボタンが有効化になるまでの時間 (ms)
+	const enable_duration = 1000;
 
 	$(this).prop({
 		download: `bulk-strings_${len}.txt`,
@@ -425,7 +462,7 @@ $bulk_download.click(function(){
 		() => {
 			$(this).prop('disabled', false);
 		},
-		1000
+		enable_duration
 	);
 
 	return true;

@@ -79,12 +79,15 @@ const OPTION = {
  * @returns {*[]}
  */
 function array_unique(array){
+
 	const unique_array = [];
 	const known_elements = {};
+
 	for(let i = 0, maxi = array.length; i < maxi; i++){
 		// 重複時
-		if(array[i] in known_elements)
+		if(array[i] in known_elements){
 			continue;
+		}
 
 		unique_array.push(array[i]);
 		known_elements[array[i]] = true;
@@ -121,17 +124,18 @@ function array_shuffle(array){
  */
 function validation(opt){
 
-	if(!opt.alpha_u && !opt.alpha_l && !opt.numeric && !opt.symbol && !opt.hex && !opt.uuid)
+	if(!opt.alpha_u && !opt.alpha_l && !opt.numeric && !opt.symbol && !opt.hex && !opt.uuid){
 		return "文字種を選択して下さい。";
-
-	if(opt.length < PWD_LEN_MIN || opt.length > PWD_LEN_MAX)
+	}
+	if(opt.length < PWD_LEN_MIN || opt.length > PWD_LEN_MAX){
 		return `文字数は${PWD_LEN_MIN}以上${PWD_LEN_MAX}以下の制限があります。`;
-
-	if(opt.use_type !== 'default' && opt.use_type !== 'hex' && opt.use_type !== 'uuid')
+	}
+	if(opt.use_type !== 'default' && opt.use_type !== 'hex' && opt.use_type !== 'uuid'){
 		return "形式が不正です。文字種を再選択してください。";
-
-	if(opt.algorithm !== 'crypt' && opt.algorithm !== 'math')
+	}
+	if(opt.algorithm !== 'crypt' && opt.algorithm !== 'math'){
 		return "アルゴリズムが不正です。";
+	}
 
 	if(opt.unique){
 		let max_length = 0;
@@ -145,25 +149,29 @@ function validation(opt){
 			if(opt.symbol){
 				let temp = SYMBOL;
 				if(opt.ignore_symbols !== ''){
-					for(let i = 0; i < opt.ignore_symbols.length; i++){
-						temp = temp.replace(opt.ignore_symbols[i], '');
+					for(let ignore_symbol of opt.ignore_symbols){
+						temp = temp.replace(ignore_symbol, '');
 					}
 				}
 				max_length += temp.length;
 			}
 		} else if(opt.use_type === 'hex' || opt.use_type === 'uuid'){
-			if(opt.hex || opt.uuid)
+			if(opt.hex || opt.uuid){
 				max_length += 16;
+			}
 		}
 
-		if(opt.mislead)
+		if(opt.mislead){
 			max_length -= filter_mislead_symbols(opt).length;
+		}
 
-		if(max_length <= 0)
+		if(max_length <= 0){
 			return "文字種を再選択してください。";
+		}
 
-		if(opt.length > max_length)
+		if(opt.length > max_length){
 			return `指定の条件では${opt.length}文字の文字列を生成できません。`;
+		}
 	}
 
 	opt.validate = true;
@@ -221,21 +229,22 @@ function filter_use_characters(opt){
 			let temp = SYMBOL;
 
 			if(opt.ignore_symbols !== ''){
-				for(let i = 0; i < opt.ignore_symbols.length; i++){
-					temp = temp.replace(opt.ignore_symbols[i], '');
+				for(let ignore_symbol of opt.ignore_symbols){
+					temp = temp.replace(ignore_symbol, '');
 				}
 			}
 
 			use_chars += temp;
 		}
 	} else if(opt.use_type === 'hex' || opt.use_type === 'uuid'){
-		if(opt.hex || opt.uuid)
+		if(opt.hex || opt.uuid){
 			use_chars += HEXADECIMAL;
+		}
 	}
 
 	const mislead_symbols = filter_mislead_symbols(opt);
-	for(let i = 0; i < mislead_symbols.length; i++){
-		use_chars = use_chars.replace(mislead_symbols[i], '');
+	for(let mislead_symbol of mislead_symbols){
+		use_chars = use_chars.replace(mislead_symbol, '');
 	}
 
 	return array_shuffle(use_chars.split(''));
@@ -272,8 +281,9 @@ function generate(algo, len, use_chars, is_unique){
 
 		if(char !== undefined){
 			if(is_unique){
-				if(password.indexOf(char) === -1)
+				if(password.indexOf(char) === -1){
 					password += char;
+				}
 			} else{
 				password += char;
 			}
@@ -291,12 +301,14 @@ function generate(algo, len, use_chars, is_unique){
  */
 function password_generate(opt){
 
-	if(!opt.validate)
+	if(!opt.validate){
 		return null;
+	}
 
 	const temp = bulk_password_generate(opt, PWD_GENERATE_COUNT);
-	if(temp === null)
+	if(temp === null){
 		return null;
+	}
 
 	return temp[Math.floor(Math.random() * PWD_GENERATE_COUNT)];
 }
@@ -310,21 +322,25 @@ function password_generate(opt){
  */
 function bulk_password_generate(opt, count){
 
-	if(!opt.validate || count < 1)
+	if(!opt.validate || count < 1){
 		return null;
+	}
 
-	if(count < PWD_BULK_MIN)
+	// 生成数調整
+	if(count < PWD_BULK_MIN) {
 		count = PWD_BULK_MIN;
-	else if(count > PWD_BULK_MAX)
+	} else if(count > PWD_BULK_MAX){
 		count = PWD_BULK_MAX;
+	}
 
 	let use_chars = filter_use_characters(opt);
 
 	const passwords = [];
 	for(let i = 0; i < count; i++){
 		// 文字種配列の順番を20%の確率で入れ替え
-		if(Math.floor(Math.random() * 100) < 20)
+		if(Math.floor(Math.random() * 100) < 20){
 			use_chars = array_shuffle(use_chars);
+		}
 
 		passwords.push(generate(opt.algorithm, opt.length, use_chars, opt.unique));
 	}
@@ -338,7 +354,6 @@ function bulk_password_generate(opt, count){
  * @returns {string}
  */
 function uuid_generate(){
-
 	return crypto.randomUUID();
 }
 
