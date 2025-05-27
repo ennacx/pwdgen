@@ -389,7 +389,7 @@ const symbols = SYMBOL.split('');
 const symbols_zen = SYMBOL_ZEN.split('');
 
 // 登録記号以外を排除する際に使用する正規表現
-const ignore_symbol_regexp_pattern = `[^${SYMBOL.replace('-', '\\-').replace(']', '\\]')}]`;
+const ignore_symbol_regexp_pattern = `[^${SYMBOL.replace('-', '\-').replace(']', '\]').replace('\\', '\\\\')}]`;
 
 /**
  * 含ませたくない記号入力フォームの内容変更
