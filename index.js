@@ -226,6 +226,26 @@ const set_option = () => {
 // 生成文字列の格納変数
 let password;
 
+// コピーボタン無効化タイムアウトIDの格納変数
+let copy_btn_timeout_id = null;
+
+/**
+ * コピーボタンの有効化
+ */
+const enable_copy_btn = () => {
+	if(copy_btn_timeout_id !== null){
+		// コピーボタン有効化
+		$password_copy_btn.find('i').removeClass('bi-check2').addClass('bi-copy');
+		$password_copy_btn.prop('disabled', false);
+
+		// タイムアウトを無効化
+		clearTimeout(copy_btn_timeout_id);
+
+		// IDを初期化
+		copy_btn_timeout_id = null;
+	}
+}
+
 /**
  * 単一文字列の生成ボタンクリック
  */
@@ -249,6 +269,8 @@ $generate_btn.click(() => {
 		if(password !== null){
 			$generate_result.find('div#generate-password').text(password);
 			$generate_result.show(anim_duration);
+
+			enable_copy_btn();
 		} else{
 			$generate_result.hide();
 		}
@@ -306,12 +328,18 @@ $password_copy_btn.click(function(){
 
 	navigator.clipboard.writeText(password).then(
 		() => {
+			// コピーボタン無効化
 			$(this).prop('disabled', true);
 			$label.removeClass('bi-copy').addClass('bi-check2');
 
-			setTimeout(() => {
+			// 時限で元に戻す処理
+			copy_btn_timeout_id = setTimeout(() => {
+				// コピーボタン有効化
 				$label.removeClass('bi-check2').addClass('bi-copy');
 				$(this).prop('disabled', false);
+
+				// IDを初期化
+				copy_btn_timeout_id = null;
 			}, 3000);
 		},
 		() => {
