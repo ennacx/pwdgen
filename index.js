@@ -51,6 +51,9 @@ const $bulk_download = $('#bulk-generate-result-modal a#bulk-generate-download')
 // コンテンツ表示のアニメーション速度
 const anim_duration = 100;
 
+// Crype実装フラグ
+let crypt_ready = true;
+
 // 文字列長の最低値/最大値を設定
 $slider.attr('min', PWD_LEN_MIN);
 $slider.attr('max', PWD_LEN_MAX);
@@ -58,7 +61,10 @@ $len_box.attr('min', PWD_LEN_MIN);
 $len_box.attr('max', PWD_LEN_MAX);
 
 // Crypt実装チェック
-if(!window.crypto || typeof window.crypto.getRandomValues !== 'function'){
+if(!window.crypto || typeof window.crypto.getRandomValues !== 'function' || typeof window.crypto.randomUUID !== 'function'){
+	// フラグ更新
+	crypt_ready = false;
+
 	// UUIDの生成無効化
 	$uuid_chk.prop('disabled', true);
 
@@ -228,6 +234,9 @@ const set_option = () => {
 	opt.mislead = $mis_chk.prop('checked');
 
 	opt.algorithm = $('input[name="algorithm"]:checked').val();
+	if(opt.algorithm === 'crypt' && !crypt_ready){
+		opt.algorithm = 'math';
+	}
 
 	opt.ignore_symbols = $ignore_symbol_box.val();
 

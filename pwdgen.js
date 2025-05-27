@@ -310,7 +310,7 @@ function password_generate(opt){
 		return null;
 	}
 
-	return temp[Math.floor(Math.random() * PWD_GENERATE_COUNT)];
+	return temp[Math.floor(Math.random() * temp.length)];
 }
 
 /**
