@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -26,9 +26,7 @@ jobs:
 
     - name: Setup module
       run: |
-        npm install -g html-minifier
-        npm install -g uglify-js
-        npm install -g clean-css-cli
+        npm install -g html-minifier-terser terser clean-css-cli
 
     - name: Make directory
       run: |
@@ -36,12 +34,12 @@ jobs:
 
     - name: HTML minifier
       run: |
-        html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype ./index.html -o ./dist/index.html
+        html-minifier-terser --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-style-link-type-attributes --use-short-doctype --minify-js true --minify-css true ./index.html -o ./dist/index.html
 
     - name: JS minifier
       run: |
-        uglifyjs ./pwdgen.js -c -m --output ./dist/pwdgen.js
-        uglifyjs ./index.js -c -m --output ./dist/index.js
+        terser ./pwdgen.js -c -m -o ./dist/pwdgen.js
+        terser ./index.js -c -m -o ./dist/index.js
 
     - name: CSS minifier
       run: |
