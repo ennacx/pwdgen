@@ -32,6 +32,11 @@ jobs:
       run: |
         mkdir -p ./dist
 
+    - name: Generate service worker with git hash
+      run: |
+        GIT_HASH=$(git rev-parse --short HEAD)
+        sed "s/{{GIT_HASH}}/${GIT_HASH}/g" service-worker.template.js > service-worker.js
+
     - name: HTML minifier
       run: |
         html-minifier-terser --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-style-link-type-attributes --use-short-doctype --minify-js true --minify-css true ./index.html -o ./dist/index.html
@@ -40,6 +45,7 @@ jobs:
       run: |
         terser ./pwdgen.js -c -m -o ./dist/pwdgen.js
         terser ./index.js -c -m -o ./dist/index.js
+        terser ./service-worker.js -c -m -o ./dist/service-worker.js
 
     - name: CSS minifier
       run: |

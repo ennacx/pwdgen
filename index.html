@@ -6,6 +6,9 @@
     <meta name="robots" content="index,follow" />
     <meta name="keywords" content="ランダム文字列,ランダム文字列生成,ランダム文字列作成,パスワード生成,パスワード作成" />
 
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+
     <title>ランダム文字列生成</title>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous" defer></script>
@@ -23,9 +26,9 @@
     <link href="favicon.ico" type="image/x-icon" rel="shortcut icon">
 
     <script>
-	    if(location.protocol !== 'https:'){
-		    alert("安全な接続 (HTTPS) を推奨します。");
-	    }
+        if(location.protocol !== 'https:'){
+            alert("安全な接続 (HTTPS) を推奨します。");
+        }
     </script>
 </head>
 
@@ -36,6 +39,10 @@
 
         <div id="subheader">
             <p>パスワードにも使える😀&nbsp;(かもしれない🤔)</p>
+        </div>
+
+        <div id="offline-notice" class="alert alert-warning text-center py-2 d-none" role="alert">
+            ⚠️ 現在オフラインモードで動作中 (キャッシュから読み込み)
         </div>
 
         <label for="pwd_len_slider" class="form-label">文字列の長さを指定</label>

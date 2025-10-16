@@ -62,28 +62,68 @@ $len_box.attr('max', PWD_LEN_MAX);
 
 // Crypt実装チェック
 if(!window.crypto || typeof window.crypto.getRandomValues !== 'function' || typeof window.crypto.randomUUID !== 'function'){
-	// フラグ更新
-	crypt_ready = false;
+    // フラグ更新
+    crypt_ready = false;
 
-	// UUIDの生成無効化
-	$uuid_chk.prop('disabled', true);
+    // UUIDの生成無効化
+    $uuid_chk.prop('disabled', true);
 
-	// アルゴリズム選択ラジオボタン無効化 (Mathを選択状態にする)
-	$algo_radio.prop('checked', false);
-	$('input[name="algorithm"][value="crypt"]').prop('disabled', true);
-	$('input[name="algorithm"][value="math"]').prop('checked', true);
+    // アルゴリズム選択ラジオボタン無効化 (Mathを選択状態にする)
+    $algo_radio.prop('checked', false);
+    $('input[name="algorithm"][value="crypt"]').prop('disabled', true);
+    $('input[name="algorithm"][value="math"]').prop('checked', true);
 
-	// 警告メッセージ表示
-	$algo_err.show(anim_duration);
+    // 警告メッセージ表示
+    $algo_err.show(anim_duration);
+}
+
+/**
+ * Updates the visibility of the offline notice based on the network status.
+ * If the device is online, it hides the offline notice. Otherwise, it shows the offline notice.
+ *
+ * @return {void} This function does not return anything.
+ */
+function update_network_status(){
+
+    const notice = document.getElementById('offline-notice');
+
+    if(navigator.onLine)
+        notice.classList.add("d-none");
+    else
+        notice.classList.remove("d-none");
+}
+
+/**
+ * Initializes and manages the network status updates by setting up event listeners for
+ * online and offline events.
+ */
+window.addEventListener('load', () => {
+    update_network_status();
+    window.addEventListener('online', update_network_status);
+    window.addEventListener('offline', update_network_status);
+});
+
+/**
+ * Registration in Service Worker
+ */
+if("serviceWorker" in navigator){
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+            .then(() => {
+                console.log('Service Worker registered successfully');
+            })
+            .catch((err) => {
+                console.error('Service Worker registration failed:', err);
+            });
+    });
 }
 
 // サブタイトル表記変更
 $('div#subheader').text(
-	'<p>'
-	+ (crypt_ready) ? "Cryptアルゴリズムならパスワードにも使える！😀" : "パスワードにはオススメできない🤔"
-	+ '</p>'
+    '<p>'
+    + (crypt_ready) ? "Cryptアルゴリズムならパスワードにも使える！😀" : "パスワードにはオススメできない🤔"
+    + '</p>'
 );
-
 
 // 登録済み記号一覧と、紛らわしい文字種一覧の表示
 $('#symbol-samples').text(SYMBOL);
@@ -97,11 +137,11 @@ $use_type_box.val(OPTION.use_type);
  */
 const changeSymbolCheck = () => {
 
-	if($sym_chk.prop('checked')){
-		$symbol_info.show(anim_duration);
-	} else{
-		$symbol_info.hide(anim_duration);
-	}
+    if($sym_chk.prop('checked')){
+        $symbol_info.show(anim_duration);
+    } else{
+        $symbol_info.hide(anim_duration);
+    }
 };
 $sym_chk.change(changeSymbolCheck);
 
@@ -110,21 +150,21 @@ $sym_chk.change(changeSymbolCheck);
  */
 $('.default-check').change(function(){
 
-	// チェック
-	if($(this).prop('checked')){
-		$slider.prop('disabled', false);
-		$len_box.prop('readonly', false);
+    // チェック
+    if($(this).prop('checked')){
+        $slider.prop('disabled', false);
+        $len_box.prop('readonly', false);
 
-		$hex_chk.prop('checked', false);
-		$uuid_chk.prop('checked', false);
+        $hex_chk.prop('checked', false);
+        $uuid_chk.prop('checked', false);
 
-		$unq_chk.prop('disabled', false);
-		$mis_chk.prop('disabled', false);
+        $unq_chk.prop('disabled', false);
+        $mis_chk.prop('disabled', false);
 
-		$algo_radio.prop('disabled', false);
+        $algo_radio.prop('disabled', false);
 
-		$use_type_box.val('default');
-	}
+        $use_type_box.val('default');
+    }
 });
 
 /**
@@ -132,34 +172,34 @@ $('.default-check').change(function(){
  */
 $('.hex-check').change(function(){
 
-	// チェック
-	if($(this).prop('checked')){
-		$slider.prop('disabled', false);
-		$len_box.prop('readonly', false);
+    // チェック
+    if($(this).prop('checked')){
+        $slider.prop('disabled', false);
+        $len_box.prop('readonly', false);
 
-		$('.default-check').prop('checked', false);
-		$uuid_chk.prop('checked', false);
-		$symbol_info.hide(anim_duration);
+        $('.default-check').prop('checked', false);
+        $uuid_chk.prop('checked', false);
+        $symbol_info.hide(anim_duration);
 
-		$unq_chk.prop('disabled', false);
-		$mis_chk.prop('checked', false).prop('disabled', true);
+        $unq_chk.prop('disabled', false);
+        $mis_chk.prop('checked', false).prop('disabled', true);
 
-		$algo_radio.prop('disabled', false);
+        $algo_radio.prop('disabled', false);
 
-		$use_type_box.val('hex');
-	}
-	// チェック解除
-	else{
-		$al_u_chk.prop('checked', true);
-		$al_l_chk.prop('checked', true);
-		$num_chk.prop('checked', true);
+        $use_type_box.val('hex');
+    }
+    // チェック解除
+    else{
+        $al_u_chk.prop('checked', true);
+        $al_l_chk.prop('checked', true);
+        $num_chk.prop('checked', true);
 
-		$mis_chk.prop('disabled', false);
+        $mis_chk.prop('disabled', false);
 
-		$algo_radio.prop('disabled', false);
+        $algo_radio.prop('disabled', false);
 
-		$use_type_box.val('default');
-	}
+        $use_type_box.val('default');
+    }
 });
 
 /**
@@ -167,39 +207,39 @@ $('.hex-check').change(function(){
  */
 $('.uuid-check').change(function(){
 
-	// チェック
-	if($(this).prop('checked')){
-		$len_box.val('36').prop('readonly', true).change(); // スライダーより前に設定して連動させてから無効化
-		$slider.prop('disabled', true);
+    // チェック
+    if($(this).prop('checked')){
+        $len_box.val('36').prop('readonly', true).change(); // スライダーより前に設定して連動させてから無効化
+        $slider.prop('disabled', true);
 
-		$('.default-check').prop('checked', false);
-		$hex_chk.prop('checked', false);
-		$symbol_info.hide(anim_duration);
+        $('.default-check').prop('checked', false);
+        $hex_chk.prop('checked', false);
+        $symbol_info.hide(anim_duration);
 
-		$unq_chk.prop('checked', false).prop('disabled', true);
-		$mis_chk.prop('checked', false).prop('disabled', true);
+        $unq_chk.prop('checked', false).prop('disabled', true);
+        $mis_chk.prop('checked', false).prop('disabled', true);
 
-		$('input[name="algorithm"][value="crypt"]').prop('checked', true);
-		$algo_radio.prop('disabled', true);
+        $('input[name="algorithm"][value="crypt"]').prop('checked', true);
+        $algo_radio.prop('disabled', true);
 
-		$use_type_box.val('uuid');
-	}
-	// チェック解除
-	else{
-		$slider.prop('disabled', false);
-		$len_box.prop('readonly', false);
+        $use_type_box.val('uuid');
+    }
+    // チェック解除
+    else{
+        $slider.prop('disabled', false);
+        $len_box.prop('readonly', false);
 
-		$al_u_chk.prop('checked', true);
-		$al_l_chk.prop('checked', true);
-		$num_chk.prop('checked', true);
+        $al_u_chk.prop('checked', true);
+        $al_l_chk.prop('checked', true);
+        $num_chk.prop('checked', true);
 
-		$algo_radio.prop('disabled', false);
+        $algo_radio.prop('disabled', false);
 
-		$unq_chk.prop('disabled', false);
-		$mis_chk.prop('disabled', false);
+        $unq_chk.prop('disabled', false);
+        $mis_chk.prop('disabled', false);
 
-		$use_type_box.val('default');
-	}
+        $use_type_box.val('default');
+    }
 });
 
 /**
@@ -228,29 +268,29 @@ $('.uuid-check').change(function(){
  */
 const set_option = () => {
 
-	const opt = OPTION;
+    const opt = OPTION;
 
-	opt.length   = parseInt($len_box.val());
-	opt.use_type = $use_type_box.val();
+    opt.length   = parseInt($len_box.val());
+    opt.use_type = $use_type_box.val();
 
-	opt.alpha_u = $al_u_chk.prop('checked');
-	opt.alpha_l = $al_l_chk.prop('checked');
-	opt.numeric = $num_chk.prop('checked');
-	opt.symbol  = $sym_chk.prop('checked');
-	opt.hex     = $hex_chk.prop('checked');
-	opt.uuid    = $uuid_chk.prop('checked');
+    opt.alpha_u = $al_u_chk.prop('checked');
+    opt.alpha_l = $al_l_chk.prop('checked');
+    opt.numeric = $num_chk.prop('checked');
+    opt.symbol  = $sym_chk.prop('checked');
+    opt.hex     = $hex_chk.prop('checked');
+    opt.uuid    = $uuid_chk.prop('checked');
 
-	opt.unique  = $unq_chk.prop('checked');
-	opt.mislead = $mis_chk.prop('checked');
+    opt.unique  = $unq_chk.prop('checked');
+    opt.mislead = $mis_chk.prop('checked');
 
-	opt.algorithm = $('input[name="algorithm"]:checked').val();
-	if(opt.algorithm === 'crypt' && !crypt_ready){
-		opt.algorithm = 'math';
-	}
+    opt.algorithm = $('input[name="algorithm"]:checked').val();
+    if(opt.algorithm === 'crypt' && !crypt_ready){
+        opt.algorithm = 'math';
+    }
 
-	opt.ignore_symbols = $ignore_symbol_box.val();
+    opt.ignore_symbols = $ignore_symbol_box.val();
 
-	return opt;
+    return opt;
 };
 
 // 生成文字列の格納変数
@@ -264,18 +304,18 @@ let copy_btn_timeout_id = null;
  */
 const enable_copy_btn = () => {
 
-	// タイムアウト処理中の場合のみ処理
-	if(copy_btn_timeout_id !== null){
-		// コピーボタン有効化
-		$password_copy_btn.find('i').removeClass('bi-check2').addClass('bi-copy');
-		$password_copy_btn.prop('disabled', false);
+    // タイムアウト処理中の場合のみ処理
+    if(copy_btn_timeout_id !== null){
+        // コピーボタン有効化
+        $password_copy_btn.find('i').removeClass('bi-check2').addClass('bi-copy');
+        $password_copy_btn.prop('disabled', false);
 
-		// タイムアウトを無効化
-		clearTimeout(copy_btn_timeout_id);
+        // タイムアウトを無効化
+        clearTimeout(copy_btn_timeout_id);
 
-		// IDを初期化
-		copy_btn_timeout_id = null;
-	}
+        // IDを初期化
+        copy_btn_timeout_id = null;
+    }
 }
 
 /**
@@ -283,45 +323,45 @@ const enable_copy_btn = () => {
  */
 $generate_btn.click(() => {
 
-	$validation_error.hide();
-	$validation_error.empty();
+    $validation_error.hide();
+    $validation_error.empty();
 
-	$bulk_textarea.text('');
-	$bulk_textarea.val('');
+    $bulk_textarea.text('');
+    $bulk_textarea.val('');
 
-	const opt = set_option();
+    const opt = set_option();
 
-	// バリデーション
-	const validate = validation(opt);
+    // バリデーション
+    const validate = validation(opt);
 
-	// バリデーションエラーあり
-	if(validate !== null){
-		$generate_result.hide();
+    // バリデーションエラーあり
+    if(validate !== null){
+        $generate_result.hide();
 
-		$validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
-		$validation_error.show(anim_duration);
-	}
-	// バリデーションエラー無し
-	else{
-		const result = (!opt.uuid) ? password_generate(opt) : uuid_generate();
-		if(result !== null){
-			password = result.password;
+        $validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
+        $validation_error.show(anim_duration);
+    }
+    // バリデーションエラー無し
+    else{
+        const result = (!opt.uuid) ? password_generate(opt) : uuid_generate();
+        if(result !== null){
+            password = result.password;
 
-			const entropy = result.entropy;
+            const entropy = result.entropy;
 
-			$generate_result.find('div#generate-password').text(password); // パスワード
-			$generate_result.find('span#entropy-value').text(`${ENTROPY_STRENGTH.get_emoji(entropy)} ${entropy.toLocaleString()}`); // エントロピー
-			$generate_result.find('div#entropy-info').attr('aria-label', `パスワード強度: ${ENTROPY_STRENGTH.get_label(entropy)}`);
-			$generate_result.find("#entropy-bar").css('width', `${Math.min(entropy / 128, 1) * 100}%`); // エントロピーバー | 128bitを最大強度とみなす
-			$generate_result.find("#entropy-bar").removeClass().addClass('progress-bar').addClass(`bg-${ENTROPY_STRENGTH.get_bar_class(entropy)}`); // エントロピーバーの色
-			$generate_result.find('span#gen-ms-value').text(result.generate_time.toLocaleString()); // 生成速度
-			$generate_result.show(anim_duration);
+            $generate_result.find('div#generate-password').text(password); // パスワード
+            $generate_result.find('span#entropy-value').text(`${ENTROPY_STRENGTH.get_emoji(entropy)} ${entropy.toLocaleString()}`); // エントロピー
+            $generate_result.find('div#entropy-info').attr('aria-label', `パスワード強度: ${ENTROPY_STRENGTH.get_label(entropy)}`);
+            $generate_result.find("#entropy-bar").css('width', `${Math.min(entropy / 128, 1) * 100}%`); // エントロピーバー | 128bitを最大強度とみなす
+            $generate_result.find("#entropy-bar").removeClass().addClass('progress-bar').addClass(`bg-${ENTROPY_STRENGTH.get_bar_class(entropy)}`); // エントロピーバーの色
+            $generate_result.find('span#gen-ms-value').text(result.generate_time.toLocaleString()); // 生成速度
+            $generate_result.show(anim_duration);
 
-			enable_copy_btn();
-		} else{
-			$generate_result.hide();
-		}
-	}
+            enable_copy_btn();
+        } else{
+            $generate_result.hide();
+        }
+    }
 });
 
 /**
@@ -329,62 +369,62 @@ $generate_btn.click(() => {
  */
 $bulk_generate_btn.click(function(){
 
-	new Promise((resolve) => {
-		$bulk_generate_btn.prop('disabled', true);
-		resolve();
-	}).then(() => {
-		$validation_error.hide();
-		$validation_error.empty();
-		$generate_result.hide();
-	}).then(() => {
-		const opt = set_option();
+    new Promise((resolve) => {
+        $bulk_generate_btn.prop('disabled', true);
+        resolve();
+    }).then(() => {
+        $validation_error.hide();
+        $validation_error.empty();
+        $generate_result.hide();
+    }).then(() => {
+        const opt = set_option();
 
-		// バリデーション
-		const validate = validation(opt);
+        // バリデーション
+        const validate = validation(opt);
 
-		// バリデーションエラーあり
-		if(validate !== null){
-			$bulk_textarea.text('');
-			$bulk_textarea.val('');
+        // バリデーションエラーあり
+        if(validate !== null){
+            $bulk_textarea.text('');
+            $bulk_textarea.val('');
 
-			$validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
-			$validation_error.show(anim_duration);
-		}
-		// バリデーションエラー無し
-		else{
-			const count = parseInt($(this).val());
-			const results = (!opt.uuid) ? bulk_password_generate(opt, count) : bulk_uuid_generate(count);
+            $validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
+            $validation_error.show(anim_duration);
+        }
+        // バリデーションエラー無し
+        else{
+            const count = parseInt($(this).val());
+            const results = (!opt.uuid) ? bulk_password_generate(opt, count) : bulk_uuid_generate(count);
 
-			if(results !== null){
-				const passwords = results.map((v) => v.password).join("\n");
-				const gen_ms_sum = results.map((v) => v.generate_time).reduce((a, b) => a + b, 0);
+            if(results !== null){
+                const passwords = results.map((v) => v.password).join("\n");
+                const gen_ms_sum = results.map((v) => v.generate_time).reduce((a, b) => a + b, 0);
 
-				const entropy = results[0].entropy;
+                const entropy = results[0].entropy;
 
-				$bulk_textarea.text(passwords);
-				$bulk_textarea.val(passwords);
-				$bulk_generate_result.find('span#bulk-entropy-value').text(`${ENTROPY_STRENGTH.get_emoji(entropy)} ${entropy.toLocaleString()}`); // エントロピー
-				$bulk_generate_result.find('div#bulk-entropy-info').attr('aria-label', `パスワード強度: ${ENTROPY_STRENGTH.get_label(entropy)}`);
-				$bulk_generate_result.find("#bulk-entropy-bar").css('width', `${Math.min(entropy / 128, 1) * 100}%`); // エントロピーバー | 128bitを最大強度とみなす
-				$bulk_generate_result.find("#bulk-entropy-bar").removeClass().addClass('progress-bar').addClass(`bg-${ENTROPY_STRENGTH.get_bar_class(entropy)}`); // エントロピーバーの色
-				$bulk_generate_result.find('span#bulk-gen-ms-value').text(gen_ms_sum.toLocaleString()); // 生成速度計
-			} else{
-				$bulk_textarea.text('');
-				$bulk_textarea.val('');
-			}
+                $bulk_textarea.text(passwords);
+                $bulk_textarea.val(passwords);
+                $bulk_generate_result.find('span#bulk-entropy-value').text(`${ENTROPY_STRENGTH.get_emoji(entropy)} ${entropy.toLocaleString()}`); // エントロピー
+                $bulk_generate_result.find('div#bulk-entropy-info').attr('aria-label', `パスワード強度: ${ENTROPY_STRENGTH.get_label(entropy)}`);
+                $bulk_generate_result.find("#bulk-entropy-bar").css('width', `${Math.min(entropy / 128, 1) * 100}%`); // エントロピーバー | 128bitを最大強度とみなす
+                $bulk_generate_result.find("#bulk-entropy-bar").removeClass().addClass('progress-bar').addClass(`bg-${ENTROPY_STRENGTH.get_bar_class(entropy)}`); // エントロピーバーの色
+                $bulk_generate_result.find('span#bulk-gen-ms-value').text(gen_ms_sum.toLocaleString()); // 生成速度計
+            } else{
+                $bulk_textarea.text('');
+                $bulk_textarea.val('');
+            }
 
-			$bulk_value_label.text(count.toLocaleString());
-		}
-	}).then(() => {
-		const modal = new bootstrap.Modal('#bulk-generate-result-modal');
-		modal.show();
-	}).then(() => {
-		$bulk_generate_btn.prop('disabled', false);
-	}).catch(() => {
-		$bulk_generate_btn.prop('disabled', false);
+            $bulk_value_label.text(count.toLocaleString());
+        }
+    }).then(() => {
+        const modal = new bootstrap.Modal('#bulk-generate-result-modal');
+        modal.show();
+    }).then(() => {
+        $bulk_generate_btn.prop('disabled', false);
+    }).catch(() => {
+        $bulk_generate_btn.prop('disabled', false);
 
-		window.alert("複数文字列の生成に失敗しました。");
-	});
+        window.alert("複数文字列の生成に失敗しました。");
+    });
 });
 
 /**
@@ -392,35 +432,35 @@ $bulk_generate_btn.click(function(){
  */
 $password_copy_btn.click(function(){
 
-	const $label = $(this).find('i');
+    const $label = $(this).find('i');
 
-	// 再度ボタンが有効化になるまでの時間 (ms)
-	const enable_duration = 3000;
+    // 再度ボタンが有効化になるまでの時間 (ms)
+    const enable_duration = 3000;
 
-	navigator.clipboard.writeText(password).then(
-		() => {
-			// コピーボタン無効化
-			$(this).prop('disabled', true);
-			$label.removeClass('bi-copy').addClass('bi-check2');
+    navigator.clipboard.writeText(password).then(
+        () => {
+            // コピーボタン無効化
+            $(this).prop('disabled', true);
+            $label.removeClass('bi-copy').addClass('bi-check2');
 
-			// 時限で元に戻す処理
-			copy_btn_timeout_id = setTimeout(() => {
-				// コピーボタン有効化
-				$label.removeClass('bi-check2').addClass('bi-copy');
-				$(this).prop('disabled', false);
+            // 時限で元に戻す処理
+            copy_btn_timeout_id = setTimeout(() => {
+                // コピーボタン有効化
+                $label.removeClass('bi-check2').addClass('bi-copy');
+                $(this).prop('disabled', false);
 
-				// IDを初期化
-				copy_btn_timeout_id = null;
-			}, enable_duration);
-		},
-		() => {
-			window.alert("コピーに失敗しました。");
-		});
+                // IDを初期化
+                copy_btn_timeout_id = null;
+            }, enable_duration);
+        },
+        () => {
+            window.alert("コピーに失敗しました。");
+        });
 });
 
 // クリップボードコピー非対応ブラウザーの場合はコピーボタンを非表示にする
 if(!navigator.clipboard){
-	$password_copy_btn.hide();
+    $password_copy_btn.hide();
 }
 
 /**
@@ -428,33 +468,33 @@ if(!navigator.clipboard){
  */
 $len_box.on('keyup change', function(e){
 
-	const val = $(this).val();
+    const val = $(this).val();
 
-	// 入力数調整
-	let new_val = (val === '' || isNaN(val)) ? PWD_LEN_MIN : parseInt(val);
-	if(new_val < PWD_LEN_MIN) {
-		new_val = PWD_LEN_MIN;
-	} else if(new_val > PWD_LEN_MAX){
-		new_val = PWD_LEN_MAX;
-	}
+    // 入力数調整
+    let new_val = (val === '' || isNaN(val)) ? PWD_LEN_MIN : parseInt(val);
+    if(new_val < PWD_LEN_MIN) {
+        new_val = PWD_LEN_MIN;
+    } else if(new_val > PWD_LEN_MAX){
+        new_val = PWD_LEN_MAX;
+    }
 
-	$slider.val(new_val);
-	$len_box.val(new_val);
+    $slider.val(new_val);
+    $len_box.val(new_val);
 });
 
 /**
  * スライダーの結果を文字列長入力フォームに即時反映
  */
 const updateInterestRate = () => {
-	$len_box.val($slider.val());
+    $len_box.val($slider.val());
 };
 
 /**
  * スライダーと文字列長入力フォームの連携初期化
  */
 const initializeSlider = () => {
-	updateInterestRate();
-	$slider.on('input', updateInterestRate)
+    updateInterestRate();
+    $slider.on('input', updateInterestRate)
 };
 initializeSlider();
 
@@ -471,15 +511,15 @@ const ignore_symbol_regexp_pattern = `[^${SYMBOL.replace('-', '\-').replace(']',
  */
 $ignore_symbol_box.on('change', function(e){
 
-	const val = $(this).val();
-	const temp = [];
+    const val = $(this).val();
+    const temp = [];
 
-	for(let char of val){
-		const index = symbols_zen.indexOf(char);
-		temp.push((index >= 0) ? symbols[index] : char);
-	}
+    for(let char of val){
+        const index = symbols_zen.indexOf(char);
+        temp.push((index >= 0) ? symbols[index] : char);
+    }
 
-	$(this).val((temp.length > 0) ? array_unique(temp).join('').replace(new RegExp(ignore_symbol_regexp_pattern, 'g'), '') : '');
+    $(this).val((temp.length > 0) ? array_unique(temp).join('').replace(new RegExp(ignore_symbol_regexp_pattern, 'g'), '') : '');
 });
 
 /**
@@ -487,25 +527,25 @@ $ignore_symbol_box.on('change', function(e){
  */
 $bulk_download.click(function(){
 
-	$(this).prop('disabled', true);
+    $(this).prop('disabled', true);
 
-	const val = $bulk_textarea.val();
-	const len = val.split("\n").length;
+    const val = $bulk_textarea.val();
+    const len = val.split("\n").length;
 
-	// 再度ボタンが有効化になるまでの時間 (ms)
-	const enable_duration = 1000;
+    // 再度ボタンが有効化になるまでの時間 (ms)
+    const enable_duration = 1000;
 
-	$(this).prop({
-		download: `bulk-strings_${len}.txt`,
-		href: `data:text/plain;charset=utf-8,${encodeURIComponent(val)}`
-	});
+    $(this).prop({
+        download: `bulk-strings_${len}.txt`,
+        href: `data:text/plain;charset=utf-8,${encodeURIComponent(val)}`
+    });
 
-	setTimeout(
-		() => {
-			$(this).prop('disabled', false);
-		},
-		enable_duration
-	);
+    setTimeout(
+        () => {
+            $(this).prop('disabled', false);
+        },
+        enable_duration
+    );
 
-	return true;
+    return true;
 });
