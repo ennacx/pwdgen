@@ -31,6 +31,7 @@ jobs:
     - name: Make directory
       run: |
         mkdir -p ./dist
+        mkdir -p ./dist/icons
 
     - name: Generate service worker with git hash
       run: |
@@ -53,7 +54,10 @@ jobs:
 
     - name: Resources cory
       run: |
+        cp ./manifest.json ./dist/
         cp ./favicon.ico ./dist/
+        cp ./icons/icon-256.png ./dist/icons/
+        cp ./icons/icon-512.png ./dist/icons/
 
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
