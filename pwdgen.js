@@ -87,12 +87,95 @@ const RESULT = {
 };
 
 /**
+ * An object representing entropy strength levels, along with their associated
+ * thresholds, styling classes, labels, and emojis. Provides methods to obtain
+ * corresponding values based on a given entropy level.
+ *
+ * Properties:
+ * - `deadly`: Represents the lowest entropy level.
+ *   - `threshold`: Maximum entropy value for the "deadly" level.
+ *   - `bar_class`: CSS class used for visual representation.
+ *   - `label`: Label for the "deadly" level.
+ *   - `emoji`: Emoji associated with the "deadly" level.
+ * - `weakly`: Represents the weak entropy level.
+ *   - `threshold`: Maximum entropy value for the "weakly" level.
+ *   - `bar_class`: CSS class used for visual representation.
+ *   - `label`: Label for the "weakly" level.
+ *   - `emoji`: Emoji associated with the "weakly" level.
+ * - `cautious`: Represents the medium entropy level.
+ *   - `threshold`: Maximum entropy value for the "cautious" level.
+ *   - `bar_class`: CSS class used for visual representation.
+ *   - `label`: Label for the "cautious" level.
+ *   - `emoji`: Emoji associated with the "cautious" level.
+ * - `safety`: Represents the highest entropy level.
+ *   - `threshold`: Maximum entropy value for the "safety" level.
+ *   - `bar_class`: CSS class used for visual representation.
+ *   - `label`: Label for the "safety" level.
+ *   - `emoji`: Emoji associated with the "safety" level.
+ *
+ * Methods:
+ * - `get_bar_class(v)`: Returns the CSS class associated with the entropy level of `v`.
+ *   @param {number} v - The entropy value to check against defined thresholds.
+ *   @returns {string} The CSS class for the corresponding entropy level.
+ *
+ * - `get_label(v)`: Returns the label associated with the entropy level of `v`.
+ *   @param {number} v - The entropy value to check against defined thresholds.
+ *   @returns {string} The label for the corresponding entropy level.
+ *
+ * - `get_emoji(v)`: Returns the emoji associated with the entropy level of `v`.
+ *   @param {number} v - The entropy value to check against defined thresholds.
+ *   @returns {string} The emoji for the corresponding entropy level.
+ */
+const ENTROPY_STRENGTH = {
+	deadly: { threshold: 60, bar_class: 'danger', label: "危", emoji: "🐣" },
+	weakly: { threshold: 90, bar_class: 'warning', label: "弱", emoji: "💪" },
+	cautious: { threshold: 128, bar_class: 'success', label: "中", emoji: "🦾" },
+	safety: { threshold: 65536, bar_class: 'primary', label: "強", emoji: "🛡️" },
+	get_bar_class: function(v){
+		if(v < this.deadly.threshold)
+			return this.deadly.bar_class;
+		else if(v < this.weakly.threshold)
+			return this.weakly.bar_class;
+		else if(v < this.cautious.threshold)
+			return this.cautious.bar_class;
+		else if(v < this.safety.threshold)
+			return this.safety.bar_class;
+		else
+			return 'dark';
+	},
+	get_label: function(v){
+		if(v < this.deadly.threshold)
+			return this.deadly.label;
+		else if(v < this.weakly.threshold)
+			return this.weakly.label;
+		else if(v < this.cautious.threshold)
+			return this.cautious.label;
+		else if(v < this.safety.threshold)
+			return this.safety.label;
+		else
+			return '';
+	},
+	get_emoji: function(v){
+		if(v < this.deadly.threshold)
+			return this.deadly.emoji;
+		else if(v < this.weakly.threshold)
+			return this.weakly.emoji;
+		else if(v < this.cautious.threshold)
+			return this.cautious.emoji;
+		else if(v < this.safety.threshold)
+			return this.safety.emoji;
+		else
+			return '';
+	}
+};
+
+/**
  * 指定バイト数の乱数バッファを返す (Uint8Array)
  *
  * @param {number} bytes
  * @returns {Uint8Array}
  */
-function cryptoRandomBytes(bytes){
+function crypto_random_bytes(bytes){
 
 	const a = new Uint8Array(bytes);
 	crypto.getRandomValues(a);
@@ -105,7 +188,7 @@ function cryptoRandomBytes(bytes){
  *
  * @returns {number} 0..2^32-1
  */
-function cryptoRandomUint32(){
+function crypto_random_uint32(){
 
 	const a = new Uint32Array(1);
 	crypto.getRandomValues(a);
@@ -119,10 +202,10 @@ function cryptoRandomUint32(){
  * @param {number} n
  * @returns {number} 0..n-1
  */
-function cryptoRandomIndex(n){
+function crypto_random_index(n){
 
 	if(!Number.isInteger(n))
-		throw new Error('cryptoRandomIndex: invalid range');
+		throw new Error('crypto_random_index: invalid range');
 	if(n <= 0 || n > 0xFFFFFFFF)
 		throw new Error('Argument `n` is out of range');
 
@@ -130,7 +213,7 @@ function cryptoRandomIndex(n){
 	const limit = Math.floor(range / n) * n; // accept値
 
 	while(true){
-		const r = cryptoRandomUint32();
+		const r = crypto_random_uint32();
 		if(r < limit){
 			return r % n;
 		}
@@ -178,7 +261,7 @@ function array_shuffle(array, crypt = true){
 	for(let i = cloneArray.length - 1; i >= 0; i--){
 		const tmpStorage = cloneArray[i];
 		if(crypt){
-			// cryptoRandomIndex()を使用せず速度向上と最適化を図る
+			// crypto_random_index()を使用せず速度向上と最適化を図る
 			crypto.getRandomValues(buf);
 			rnd = buf[0] % (i + 1);
 		} else{
@@ -352,20 +435,18 @@ function generate(algo, len, use_chars, is_unique){
 	const chars = (Array.isArray(use_chars)) ? use_chars : use_chars.split('');
 
 	const password = [];
-	const used = new Set();
+	const used_chars = new Set();
 	const chars_len = chars.length;
 
 	// cryptoベースの安全な生成
 	if(algo === 'crypt'){
 		while(password.length < len){
-			const idx = cryptoRandomIndex(chars_len);
+			const idx = crypto_random_index(chars_len);
 			const char = chars[idx];
 
-			if(!is_unique || !used.has(char)){
+			if(!is_unique || !used_chars.has(char)){
 				password.push(char);
-
-				if(is_unique)
-					used.add(char);
+				used_chars.add(char);
 			}
 		}
 	}
@@ -374,17 +455,15 @@ function generate(algo, len, use_chars, is_unique){
 		while(password.length < len){
 			const char = chars[Math.floor(Math.random() * chars_len)];
 
-			if(!is_unique || !used.has(char)){
+			if(!is_unique || !used_chars.has(char)){
 				password.push(char);
-
-				if(is_unique)
-					used.add(char);
+				used_chars.add(char);
 			}
 		}
 	}
 	// エラー
 	else{
-		throw new Error('Algorithm is not supported');
+		throw new Error(`'${algo}' algorithm is not supported`);
 	}
 
 	return password.join('');

@@ -136,20 +136,24 @@
 
         <div id="validation-error"></div>
         <div id="generate-result">
-            <div class="alert alert-primary w-100">
+            <div class="alert alert-primary w-100 mb-1">
                 <div class="d-flex">
                     <div id="generate-password"></div>
                     <button name="password_copy" class="btn btn-sm btn-outline-secondary ms-auto"><i class="bi bi-copy"></i></button>
                 </div>
             </div>
 
-            <div class="row text-secondary small">
-                <div id="entropy-info" class="col-6">
-                    エントロピー: <span id="entropy-value">--</span> bit
+            <div class="d-flex text-secondary small">
+                <div id="entropy-info" class="flex-grow-1" aria-label="パスワード強度">
+                    エントロピー: <span id="entropy-value">❓&nbsp;--</span> bits.
+                    <a href="https://en.wikipedia.org/wiki/Entropy_(information_theory)" target="_blank"><i class="bi bi-info-circle"></i></a>
                 </div>
-                <div id="speed-info" class="col-6">
-                    生成速度: <span id="gen-ms-value">--</span> ms.
+                <div id="speed-info" class="col-3 text-end">
+                    <span id="gen-ms-value">--</span> ms. で生成
                 </div>
+            </div>
+            <div class="progress mt-1" style="height: 6px;">
+                <div id="entropy-bar" class="progress-bar" role="progressbar" style="width: 0;"></div>
             </div>
         </div>
 
@@ -183,14 +187,18 @@
                 <div class="modal-body">
                     <div id="bulk-generate-result">
                         <textarea name="bulk_password" class="form-control"></textarea>
-                    </div>
 
-                    <div class="row text-secondary small">
-                        <div id="bulk-entropy-info" class="col-6">
-                            エントロピー: <span id="bulk-entropy-value">--</span> bit
+                        <div class="d-flex text-secondary small mt-1">
+                            <div id="bulk-entropy-info" class="flex-grow-1" aria-label="パスワード強度">
+                                エントロピー: <span id="bulk-entropy-value">--</span> bits.
+                                <a href="https://en.wikipedia.org/wiki/Entropy_(information_theory)" target="_blank"><i class="bi bi-info-circle"></i></a>
+                            </div>
+                            <div id="bulk-speed-info" class="col-3 text-end">
+                                <span id="bulk-gen-ms-value">--</span> ms. で生成
+                            </div>
                         </div>
-                        <div id="bulk-speed-info" class="col-6">
-                            生成速度: <span id="bulk-gen-ms-value">--</span> ms.
+                        <div class="progress mt-1" style="height: 6px;">
+                            <div id="bulk-entropy-bar" class="progress-bar" role="progressbar" style="width: 0;"></div>
                         </div>
                     </div>
                 </div>
