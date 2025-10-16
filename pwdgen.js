@@ -27,28 +27,22 @@ const PWD_BULK_MIN = 1;
 const PWD_BULK_MAX = 10000;
 
 /**
- * 設定エンティティー
+ * Configuration object representing the options for generating or validating passwords.
  *
- * @type {{
- *      length: number,
- *
- *      use_type: string,
- *
- *      alpha_u: boolean,
- *      alpha_l: boolean,
- *      numeric: boolean,
- *      symbol: boolean,
- *      hex: boolean,
- *      uuid: boolean,
- *
- *      unique: boolean,
- *      mislead: boolean,
- *      algorithm: string,
- *
- *      ignore_symbols: string,
- *
- *      validate: boolean
- * }}
+ * @typedef {Object} OPTION
+ * @property {number} length - Specifies the minimum length of the password.
+ * @property {string} use_type - Indicates the usage type for the password generation. Default is 'default'.
+ * @property {boolean} alpha_u - Determines if uppercase alphabetical characters are allowed.
+ * @property {boolean} alpha_l - Determines if lowercase alphabetical characters are allowed.
+ * @property {boolean} numeric - Indicates whether numeric characters are included.
+ * @property {boolean} symbol - Specifies if symbols will be included in the password.
+ * @property {boolean} hex - Denotes whether the password should use hexadecimal characters.
+ * @property {boolean} uuid - Indicates if the output should follow a UUID structure.
+ * @property {boolean} unique - Enforces all characters in the password to be unique.
+ * @property {boolean} mislead - Allows misleading characters (e.g., 'O' vs '0') if set to true.
+ * @property {string} algorithm - Defines the algorithm to use for password operations. Default is 'math'.
+ * @property {string} ignore_symbols - A string containing characters to exclude from use as symbols.
+ * @property {boolean} validate - Determines if validation is required for the generated password.
  */
 const OPTION = {
 	length: PWD_LEN_MIN,
@@ -71,6 +65,77 @@ const OPTION = {
 
 	validate: false
 };
+
+/**
+ * Represents the result of a password generation process.
+ *
+ * @typedef {Object} RESULT
+ * @property {string} password                The generated password string.
+ * @property {number|undefined} length        The length of the generated password.
+ * @property {number|undefined} entropy       The entropy of the generated password, indicating its randomness and strength.
+ * @property {number|undefined} charset_size  The size of the character set used for generating the password.
+ * @property {string|undefined} algorithm     The algorithm used for password generation.
+ * @property {number|undefined} generate_time The time taken to generate the password, typically in milliseconds.
+ */
+const RESULT = {
+	password: '',
+	length: undefined,
+	entropy: undefined,
+	charset_size: undefined,
+	algorithm: undefined,
+	generate_time: undefined
+};
+
+/**
+ * 指定バイト数の乱数バッファを返す (Uint8Array)
+ *
+ * @param {number} bytes
+ * @returns {Uint8Array}
+ */
+function cryptoRandomBytes(bytes){
+
+	const a = new Uint8Array(bytes);
+	crypto.getRandomValues(a);
+
+	return a;
+}
+
+/**
+ * `crypto.getRandomUint32()`相当 (単一の32bit非負整数) を取得
+ *
+ * @returns {number} 0..2^32-1
+ */
+function cryptoRandomUint32(){
+
+	const a = new Uint32Array(1);
+	crypto.getRandomValues(a);
+
+	return a[0] >>> 0;
+}
+
+/**
+ * 指定された上界 `n` (1 <= n <= 2^32) の一様インデックスを返す (棄却サンプリング)
+ *
+ * @param {number} n
+ * @returns {number} 0..n-1
+ */
+function cryptoRandomIndex(n){
+
+	if(!Number.isInteger(n))
+		throw new Error('cryptoRandomIndex: invalid range');
+	if(n <= 0 || n > 0xFFFFFFFF)
+		throw new Error('Argument `n` is out of range');
+
+	const range = 0x100000000; // 2^32
+	const limit = Math.floor(range / n) * n; // accept値
+
+	while(true){
+		const r = cryptoRandomUint32();
+		if(r < limit){
+			return r % n;
+		}
+	}
+}
 
 /**
  * 配列の重複要素を削除
@@ -100,21 +165,48 @@ function array_unique(array){
  * 配列要素の順番をシャッフル
  *
  * @param   {*[]} array
+ * @param   {boolean} [crypt = true]
  * @returns {*[]}
  */
-function array_shuffle(array){
+function array_shuffle(array, crypt = true){
 
 	const cloneArray = [...array];
+	const buf = new Uint32Array(1);
+
+	let rnd;
 
 	for(let i = cloneArray.length - 1; i >= 0; i--){
 		const tmpStorage = cloneArray[i];
-		const rnd = Math.floor(Math.random() * (i + 1));
+		if(crypt){
+			// cryptoRandomIndex()を使用せず速度向上と最適化を図る
+			crypto.getRandomValues(buf);
+			rnd = buf[0] % (i + 1);
+		} else{
+			rnd = Math.floor(Math.random() * (i + 1));
+		}
 
 		cloneArray[i] = cloneArray[rnd];
 		cloneArray[rnd] = tmpStorage;
 	}
 
-	return cloneArray
+	return cloneArray;
+}
+
+/**
+ * Calculates the entropy (in bits) for a given length and character set size.
+ *
+ * The entropy is computed as the product of the length and the base-2 logarithm of the character set size.
+ *
+ * @param {number} length - The length of the string for which entropy is being calculated.
+ * @param {number} charsetSize - The size of the character set being used.
+ * @return {string} The calculated entropy, rounded to two decimal places.
+ */
+function calc_entropy(length, charsetSize){
+
+	// L * log2(N)
+	const bits = length * Math.log2(charsetSize);
+
+	return bits.toFixed(2);
 }
 
 /**
@@ -124,18 +216,14 @@ function array_shuffle(array){
  */
 function validation(opt){
 
-	if(!opt.alpha_u && !opt.alpha_l && !opt.numeric && !opt.symbol && !opt.hex && !opt.uuid){
+	if(!opt.alpha_u && !opt.alpha_l && !opt.numeric && !opt.symbol && !opt.hex && !opt.uuid)
 		return "文字種を選択して下さい。";
-	}
-	if(opt.length < PWD_LEN_MIN || opt.length > PWD_LEN_MAX){
+	if(opt.length < PWD_LEN_MIN || opt.length > PWD_LEN_MAX)
 		return `文字数は${PWD_LEN_MIN}以上${PWD_LEN_MAX}以下の制限があります。`;
-	}
-	if(opt.use_type !== 'default' && opt.use_type !== 'hex' && opt.use_type !== 'uuid'){
+	if(opt.use_type !== 'default' && opt.use_type !== 'hex' && opt.use_type !== 'uuid')
 		return "形式が不正です。文字種を再選択してください。";
-	}
-	if(opt.algorithm !== 'crypt' && opt.algorithm !== 'math'){
+	if(opt.algorithm !== 'crypt' && opt.algorithm !== 'math')
 		return "アルゴリズムが不正です。";
-	}
 
 	if(opt.unique){
 		let max_length = 0;
@@ -165,13 +253,10 @@ function validation(opt){
 			max_length -= filter_mislead_symbols(opt).length;
 		}
 
-		if(max_length <= 0){
+		if(max_length <= 0)
 			return "文字種を再選択してください。";
-		}
-
-		if(opt.length > max_length){
+		if(opt.length > max_length)
 			return `指定の条件では${opt.length}文字の文字列を生成できません。`;
-		}
 	}
 
 	opt.validate = true;
@@ -247,70 +332,78 @@ function filter_use_characters(opt){
 		use_chars = use_chars.replace(mislead_symbol, '');
 	}
 
-	return array_shuffle(use_chars.split(''));
+	return array_shuffle(use_chars.split(''), opt.algorithm === 'crypt');
 }
 
 /**
- * 文字列生成
+ * Generates a password string based on the specified algorithm and parameters.
  *
- * @param {string} algo
- * @param {Number} len
- * @param {string[]} use_chars
- * @param {boolean} is_unique
- * @returns {string}
+ * @param {string} algo - The algorithm to use for password generation. Valid options are 'crypt' or 'math'.
+ * @param {number} len - The desired length of the password.
+ * @param {string[]|string} use_chars - A string containing the characters that can be used in the password.
+ * @param {boolean} is_unique - Whether the password should contain unique characters only (true) or allow duplicates (false).
+ * @return {string} The generated password based on the given parameters.
+ * @throws {Error} If an unsupported algorithm is specified.
  */
 function generate(algo, len, use_chars, is_unique){
 
-	const use_chars_len = use_chars.length;
+	const ret = RESULT;
 
-	let password = '';
-	while(password.length < len){
-		let char;
+	const chars = (Array.isArray(use_chars)) ? use_chars : use_chars.split('');
 
-		// Crypt
-		if(algo === 'crypt'){
-			const arr = Array.from(crypto.getRandomValues(new BigUint64Array(CRYPT_GENERATE_COUNT)));
-			const bigint = arr[Math.floor(Math.random() * CRYPT_GENERATE_COUNT)];
+	const password = [];
+	const used = new Set();
+	const chars_len = chars.length;
 
-			char = use_chars[Number(bigint % BigInt(use_chars_len))];
-		}
-		// Math
-		else if(algo === 'math'){
-			char = use_chars[Math.floor(Math.random() * use_chars_len)];
-		}
+	// cryptoベースの安全な生成
+	if(algo === 'crypt'){
+		while(password.length < len){
+			const idx = cryptoRandomIndex(chars_len);
+			const char = chars[idx];
 
-		if(char !== undefined){
-			if(is_unique){
-				if(password.indexOf(char) === -1){
-					password += char;
-				}
-			} else{
-				password += char;
+			if(!is_unique || !used.has(char)){
+				password.push(char);
+
+				if(is_unique)
+					used.add(char);
 			}
 		}
 	}
+	// mathベース (互換のため残すが暗号強度は皆無)
+	else if(algo === 'math'){
+		while(password.length < len){
+			const char = chars[Math.floor(Math.random() * chars_len)];
 
-	return password;
+			if(!is_unique || !used.has(char)){
+				password.push(char);
+
+				if(is_unique)
+					used.add(char);
+			}
+		}
+	}
+	// エラー
+	else{
+		throw new Error('Algorithm is not supported');
+	}
+
+	return password.join('');
 }
 
 /**
  * 単一の文字列生成
  *
  * @param {OPTION} opt
- * @returns {string|null}
+ * @returns {RESULT|null}
  */
 function password_generate(opt){
 
-	if(!opt.validate){
+	if(!opt.validate)
 		return null;
-	}
 
 	const temp = bulk_password_generate(opt, PWD_GENERATE_COUNT);
-	if(temp === null){
-		return null;
-	}
 
-	return temp[Math.floor(Math.random() * temp.length)];
+	return (temp !== null) ? temp[Math.floor(Math.random() * temp.length)] : null;
 }
 
 /**
@@ -318,43 +411,66 @@ function password_generate(opt){
  *
  * @param {OPTION} opt
  * @param {Number} count
- * @returns {string[]|null}
+ * @returns {RESULT[]|null}
  */
 function bulk_password_generate(opt, count){
 
-	if(!opt.validate || count < 1){
+	if(!opt.validate || count < 1)
 		return null;
-	}
 
 	// 生成数調整
-	if(count < PWD_BULK_MIN) {
+	if(count < PWD_BULK_MIN)
 		count = PWD_BULK_MIN;
-	} else if(count > PWD_BULK_MAX){
+	else if(count > PWD_BULK_MAX)
 		count = PWD_BULK_MAX;
-	}
 
 	let use_chars = filter_use_characters(opt);
 
-	const passwords = [];
+	const passwordResults = [];
 	for(let i = 0; i < count; i++){
 		// 文字種配列の順番を20%の確率で入れ替え
 		if(Math.floor(Math.random() * 100) < 20){
 			use_chars = array_shuffle(use_chars);
 		}
 
-		passwords.push(generate(opt.algorithm, opt.length, use_chars, opt.unique));
+		const st_time = performance.now();
+		const password = generate(opt.algorithm, opt.length, use_chars, opt.unique);
+		const ed_time = performance.now();
+
+		const result = { ...RESULT };
+		result.password = password;
+		result.length = opt.length;
+		result.entropy = calc_entropy(opt.length, use_chars.length);
+		result.charset_size = use_chars.length;
+		result.algorithm = opt.algorithm;
+		result.generate_time = ed_time - st_time;
+
+		passwordResults.push(result);
 	}
 
-	return passwords;
+	return passwordResults;
 }
 
 /**
  * 単一のUUID生成
  *
- * @returns {string}
+ * @returns {RESULT}
  */
 function uuid_generate(){
-	return crypto.randomUUID();
+
+	const st_time = performance.now();
+	const password = crypto.randomUUID();
+	const ed_time = performance.now();
+
+	const result = { ...RESULT };
+	result.password = password;
+	result.length = 36;
+	result.entropy = 122;
+	result.charset_size = 16;
+	result.algorithm = 'crypt';
+	result.generate_time = ed_time - st_time;
+
+	return result;
 }
 
 /**

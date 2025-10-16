@@ -51,7 +51,7 @@ const $bulk_download = $('#bulk-generate-result-modal a#bulk-generate-download')
 // コンテンツ表示のアニメーション速度
 const anim_duration = 100;
 
-// Crype実装フラグ
+// Crypt実装フラグ
 let crypt_ready = true;
 
 // 文字列長の最低値/最大値を設定
@@ -76,6 +76,14 @@ if(!window.crypto || typeof window.crypto.getRandomValues !== 'function' || type
 	// 警告メッセージ表示
 	$algo_err.show(anim_duration);
 }
+
+// サブタイトル表記変更
+$('div#subheader').text(
+	'<p>'
+	+ (crypt_ready) ? "Cryptアルゴリズムならパスワードにも使える！😀" : "パスワードにはオススメできない🤔"
+	+ '</p>'
+);
+
 
 // 登録済み記号一覧と、紛らわしい文字種一覧の表示
 $('#symbol-samples').text(SYMBOL);
@@ -118,6 +126,7 @@ $('.default-check').change(function(){
 		$use_type_box.val('default');
 	}
 });
+
 /**
  * "16進数"のチェックボックス制御
  */
@@ -152,6 +161,7 @@ $('.hex-check').change(function(){
 		$use_type_box.val('default');
 	}
 });
+
 /**
  * "UUID"のチェックボックス制御
  */
@@ -293,9 +303,13 @@ $generate_btn.click(() => {
 	}
 	// バリデーションエラー無し
 	else{
-		password = (!opt.uuid) ? password_generate(opt) : uuid_generate();
-		if(password !== null){
-			$generate_result.find('div#generate-password').text(password);
+		const result = (!opt.uuid) ? password_generate(opt) : uuid_generate();
+		if(result !== null){
+			password = result.password;
+
+			$generate_result.find('div#generate-password').text(password); // パスワード
+			$generate_result.find('span#entropy-value').text(result.entropy.toLocaleString()); // エントロピー
+			$generate_result.find('span#gen-ms-value').text(result.generate_time.toLocaleString()); // 生成速度
 			$generate_result.show(anim_duration);
 
 			enable_copy_btn();
@@ -317,7 +331,7 @@ $bulk_generate_btn.click(function(){
 		$validation_error.hide();
 		$validation_error.empty();
 		$generate_result.hide();
-
+	}).then(() => {
 		const opt = set_option();
 
 		// バリデーション
@@ -334,11 +348,20 @@ $bulk_generate_btn.click(function(){
 		// バリデーションエラー無し
 		else{
 			const count = parseInt($(this).val());
-			const passwords = (!opt.uuid) ? bulk_password_generate(opt, count) : bulk_uuid_generate(count);
-			const temp = (passwords !== null) ? passwords.join("\n") : '';
+			const results = (!opt.uuid) ? bulk_password_generate(opt, count) : bulk_uuid_generate(count);
 
-			$bulk_textarea.text(temp);
-			$bulk_textarea.val(temp);
+			if(results !== null){
+				const passwords = results.map((v) => v.password).join("\n");
+				const gen_ms_sum = results.map((v) => v.generate_time).reduce((a, b) => a + b, 0);
+
+				$bulk_textarea.text(passwords);
+				$bulk_textarea.val(passwords);
+				$('div#bulk-entropy-info').find('span#bulk-entropy-value').text(results[0].entropy.toLocaleString()); // エントロピー
+				$('div#bulk-speed-info').find('span#bulk-gen-ms-value').text(gen_ms_sum.toLocaleString()); // 生成速度
+			} else{
+				$bulk_textarea.text('');
+				$bulk_textarea.val('');
+			}
 
 			$bulk_value_label.text(count.toLocaleString());
 		}
