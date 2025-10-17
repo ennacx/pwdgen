@@ -46,6 +46,7 @@ jobs:
       run: |
         terser ./pwdgen.js -c -m -o ./dist/pwdgen.js
         terser ./index.js -c -m -o ./dist/index.js
+        terser ./reg-service-worker.js -c -m -o ./dist/reg-service-worker.js
         terser ./service-worker.js -c -m -o ./dist/service-worker.js
 
     - name: CSS minifier
