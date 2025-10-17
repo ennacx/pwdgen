@@ -1,9 +1,14 @@
-@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Noto+Sans+JP:wght@100..900&display=swap");
+*:not(#generate-result):not(.progress-bar) {
+  transition: all 0.15s ease-in-out;
+}
+
 body {
   margin: 16px auto;
+  background-color: #f9fafb;
   font-family: "Noto Sans JP", sans-serif;
   font-size: 0.93rem;
+  color: #111827;
 }
 
 @media (min-width: 719.98px) {
@@ -12,8 +17,12 @@ body {
   }
 }
 a {
-  cursor: grab;
+  color: #2d8efd;
   text-decoration: none;
+  cursor: pointer;
+}
+a:hover {
+  color: #4aa3f8;
 }
 
 h1 {
@@ -29,11 +38,16 @@ h2 {
   color: green;
 }
 
+label {
+  color: #111827;
+}
+
 footer {
   text-align: right;
   font-size: 0.67rem;
   border-top: 1px solid #eaeaea;
-  background-color: #ffffff;
+  background-color: #f9fafb;
+  backdrop-filter: blur(4px);
   color: #a5a5a5;
   width: 100%;
   height: 36px;
@@ -130,18 +144,97 @@ footer ul.copy-links li i {
   margin-right: 8px;
 }
 
-.btn-primary, .btn-outline-primary:hover {
-  background-color: #2d8efd; /* 既定 */
-  transition: background-color 0.2s;
+.card {
+  border-color: #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
+.card-header {
+  background-color: #f4f4f4;
+  border-bottom-color: #e5e7eb;
+}
+
+.modal-content {
+  background-color: #f9fafb;
+}
+
+.bg-danger, .bg-warning, .bg-success, .bg-primary {
+  --bs-bg-opacity: 1;
+}
+
+.bg-danger {
+  background-color: #ef4444 !important;
+}
+
+.bg-warning {
+  background-color: #f59e0b !important;
+}
+
+.bg-success {
+  background-color: #22c55e !important;
+}
+
+.bg-primary {
+  background-color: #3b82f6 !important;
+}
+
+.btn-primary {
+  background-color: #2d8efd;
+  border-color: #2d8efd;
+  color: #fff;
+}
 .btn-primary:hover {
-  background-color: #4aa3e8; /* やや軽い青 */
+  background-color: #4aa3f8;
+  border-color: #4aa3f8;
+  color: #fff;
+}
+
+.btn-outline-secondary,
+.btn-outline-primary {
+  background-color: transparent;
+}
+
+.btn-outline-primary {
+  border-color: #2d8efd;
+  color: #2d8efd;
+  transition: background-color 0.2s;
+}
+.btn-outline-primary:hover {
+  background-color: #2d8efd;
+  border-color: #2d8efd;
+  color: #fff;
+}
+
+.form-control {
+  background-color: #f9fafb;
+  box-shadow: none;
+}
+
+.form-range {
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+.form-range::-webkit-slider-thumb, .form-range::-moz-range-thumb {
+  background-color: #2d8efd;
 }
 
 .form-check-input:checked {
   background-color: #2d8efd;
   border-color: #2d8efd;
+}
+
+.progress-bar {
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.strength-emoji {
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+.strength-emoji.updated {
+  transform: scale(1.2);
 }
 
 /*# sourceMappingURL=pwdgen.css.map */

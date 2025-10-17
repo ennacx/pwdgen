@@ -318,7 +318,7 @@ $generate_btn.click(() => {
             const entropy = result.entropy;
 
             $generate_result.find('div#generate-password').text(password); // パスワード
-            $generate_result.find('span#entropy-value').text(`${ENTROPY_STRENGTH.get_emoji(entropy)} ${entropy.toLocaleString()}`); // エントロピー
+            $generate_result.find('span#entropy-value').html(`<span class="strength-emoji">${ENTROPY_STRENGTH.get_emoji(entropy)}</span> ${entropy.toLocaleString()}`); // エントロピー
             $generate_result.find('div#entropy-info').attr('aria-label', `パスワード強度: ${ENTROPY_STRENGTH.get_label(entropy)}`);
             $generate_result.find("#entropy-bar").css('width', `${Math.min(entropy / 128, 1) * 100}%`); // エントロピーバー | 128bitを最大強度とみなす
             $generate_result.find("#entropy-bar").removeClass().addClass('progress-bar').addClass(`bg-${ENTROPY_STRENGTH.get_bar_class(entropy)}`); // エントロピーバーの色
@@ -372,7 +372,7 @@ $bulk_generate_btn.click(async function(){
 
                 $bulk_textarea.text(passwords);
                 $bulk_textarea.val(passwords);
-                $bulk_generate_result.find('span#bulk-entropy-value').text(`${ENTROPY_STRENGTH.get_emoji(entropy)} ${entropy.toLocaleString()}`); // エントロピー
+                $bulk_generate_result.find('span#bulk-entropy-value').html(`<span class="strength-emoji">${ENTROPY_STRENGTH.get_emoji(entropy)}</span> ${entropy.toLocaleString()}`); // エントロピー
                 $bulk_generate_result.find('div#bulk-entropy-info').attr('aria-label', `パスワード強度: ${ENTROPY_STRENGTH.get_label(entropy)}`);
                 $bulk_generate_result.find("#bulk-entropy-bar").css('width', `${Math.min(entropy / 128, 1) * 100}%`); // エントロピーバー | 128bitを最大強度とみなす
                 $bulk_generate_result.find("#bulk-entropy-bar").removeClass().addClass('progress-bar').addClass(`bg-${ENTROPY_STRENGTH.get_bar_class(entropy)}`); // エントロピーバーの色

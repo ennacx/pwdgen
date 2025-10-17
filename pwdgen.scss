@@ -1,15 +1,30 @@
+@charset "UTF-8";
+
 // Google fonts "Noto Sans JP", "Atkinson Hyperlegible Mono"
 @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Noto+Sans+JP:wght@100..900&display=swap');
+
+// 既定色
+$bg_color: #f9fafb;
+$default_color: #2d8efd;
+$light_color: #4aa3f8;
+$font_color: #111827;
 
 $footer_height: 36px;
 $default_font: "Noto Sans JP", sans-serif;
 $mono_font: "Atkinson Hyperlegible Mono", monospace;
 
+// モーションを足す
+*:not(#generate-result):not(.progress-bar) {
+	transition: all 0.15s ease-in-out;
+}
+
 body {
 	margin: 16px auto;
 
+	background-color: $bg_color;
 	font-family: $default_font;
 	font-size: 0.93rem;
+	color: $font_color;
 }
 
 @media (min-width: 719.98px) {
@@ -19,8 +34,13 @@ body {
 }
 
 a {
-	cursor: grab;
+	color: $default_color;
 	text-decoration: none;
+	cursor: pointer;
+
+	&:hover {
+		color: $light_color;
+	}
 }
 
 h1 {
@@ -37,11 +57,16 @@ h2 {
 	color: green;
 }
 
+label {
+	color: $font_color;
+}
+
 footer {
 	text-align: right;
 	font-size: 0.67rem;
 	border-top: 1px solid #eaeaea;
-	background-color: #ffffff;
+	background-color: $bg_color;
+	backdrop-filter: blur(4px);
 	color: #a5a5a5;
 
 	width: 100%;
@@ -169,15 +194,87 @@ footer {
 	}
 }
 
-.btn-primary, .btn-outline-primary:hover {
-	background-color: #2d8efd; /* 既定 */
-	transition: background-color 0.2s;
+.card {
+	border-color: #e5e7eb;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
-.btn-primary:hover {
-	background-color: #4aa3e8; /* やや軽い青 */
+.card-header {
+	background-color: #f4f4f4;
+	border-bottom-color: #e5e7eb;
+}
+
+.modal-content {
+	background-color: $bg_color;
+}
+
+.bg-danger, .bg-warning, .bg-success, .bg-primary {
+	--bs-bg-opacity: 1;
+}
+
+.bg-danger { background-color: #ef4444 !important; }
+.bg-warning { background-color: #f59e0b !important; }
+.bg-success { background-color: #22c55e !important; }
+.bg-primary { background-color: #3b82f6 !important; }
+
+.btn-primary {
+	background-color: $default_color;
+	border-color: $default_color;
+	color: #fff;
+
+	&:hover {
+		background-color: $light_color;
+		border-color: $light_color;
+		color: #fff;
+	}
+}
+
+.btn-outline-secondary,
+.btn-outline-primary {
+	background-color: transparent;
+}
+
+.btn-outline-primary {
+	border-color: $default_color;
+	color: $default_color;
+	transition: background-color 0.2s;
+
+	&:hover {
+		background-color: $default_color;
+		border-color: $default_color;
+		color: #fff;
+	}
+}
+
+.form-control {
+	background-color: $bg_color;
+	box-shadow: none;
+}
+
+.form-range {
+	-webkit-appearance: none;
+	appearance: none;
+	outline: none;
+	cursor: pointer;
+
+	&::-webkit-slider-thumb,
+	&::-moz-range-thumb {
+		background-color: $default_color;
+	}
 }
 
 .form-check-input:checked {
-	background-color: #2d8efd;
-	border-color: #2d8efd;
+	background-color: $default_color;
+	border-color: $default_color;
+}
+
+.progress-bar {
+	transition: width 0.4s ease, background-color 0.4s ease;
+}
+.strength-emoji {
+	font-size: 1.2rem;
+	transition: transform 0.2s ease;
+
+	&.updated {
+		transform: scale(1.2);
+	}
 }
