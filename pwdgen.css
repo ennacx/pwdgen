@@ -238,11 +238,12 @@ footer ul.copy-links li i {
 }
 
 .strength-emoji {
+  display: inline-block;
   font-size: 1.2rem;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease-out, opacity 0.3s ease-out;
 }
-.strength-emoji.updated {
-  transform: scale(1.2);
+.strength-emoji.bump {
+  transform: scale(1.25) translateY(-4px);
 }
 
 /*# sourceMappingURL=pwdgen.css.map */

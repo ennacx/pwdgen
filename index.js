@@ -286,6 +286,9 @@ const enableCopyBtn = () => {
     }
 }
 
+// 直前の単一生成結果のエントロピー強度ラベル
+let lastEntropyStrengthLabel = '';
+
 /**
  * 単一文字列の生成ボタンクリック
  */
@@ -316,15 +319,28 @@ $generate_btn.click(() => {
             password = result.password;
 
             const entropy = result.entropy;
+            const emoji = ENTROPY_STRENGTH.get_emoji(entropy);
+            const label = ENTROPY_STRENGTH.get_label(entropy);
+            const bar_class = ENTROPY_STRENGTH.get_bar_class(entropy);
 
             $generate_result.find('div#generate-password').text(password); // パスワード
-            $generate_result.find('span#entropy-value').html(`<span class="strength-emoji">${ENTROPY_STRENGTH.get_emoji(entropy)}</span> ${entropy.toLocaleString()}`); // エントロピー
-            $generate_result.find('div#entropy-info').attr('aria-label', `パスワード強度: ${ENTROPY_STRENGTH.get_label(entropy)}`);
+            $generate_result.find('span#entropy-value').html(`<span class="strength-emoji">${emoji}</span> ${entropy.toLocaleString()}`); // エントロピー
+            $generate_result.find('div#entropy-info').attr('aria-label', `パスワード強度: ${label}`);
             $generate_result.find("#entropy-bar").css('width', `${Math.min(entropy / 128, 1) * 100}%`); // エントロピーバー | 128bitを最大強度とみなす
-            $generate_result.find("#entropy-bar").removeClass().addClass('progress-bar').addClass(`bg-${ENTROPY_STRENGTH.get_bar_class(entropy)}`); // エントロピーバーの色
+            $generate_result.find("#entropy-bar").removeClass().addClass('progress-bar').addClass(`bg-${bar_class}`); // エントロピーバーの色
             $generate_result.find('span#gen-ms-value').text(result.generate_time.toLocaleString()); // 生成速度
             $generate_result.show(ANIM_DURATION_MS);
 
+            // エントロピーアイコンの演出
+            if(label !== lastEntropyStrengthLabel){
+                const $strength_emoji = $('span.strength-emoji');
+
+                $strength_emoji.addClass('bump');
+                setTimeout(() => $strength_emoji.removeClass('bump'), 250);
+            }
+            lastEntropyStrengthLabel = label;
+
+            // コピーボタン有効化
             enableCopyBtn();
         } else{
             $generate_result.hide();
@@ -340,9 +356,13 @@ $bulk_generate_btn.click(async function(){
     try{
         $bulk_generate_btn.prop('disabled', true);
 
+        // エラー表示エリアの非表示化
         $validation_error.hide();
         $validation_error.empty();
+
+        // 単一表示エリアの非表示化
         $generate_result.hide();
+        lastEntropyStrengthLabel = '';
 
         const opt = setOption();
 
@@ -401,12 +421,38 @@ $bulk_generate_btn.click(async function(){
  */
 $password_copy_btn.click(function(){
 
+    const copyToClipboard = (text) => {
+        if(navigator.clipboard && window.isSecureContext){
+            return navigator.clipboard.writeText(text);
+        } else{
+            // フォールバック処理
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.style.position = "fixed"; // iOS対策
+            textarea.style.opacity = "0";
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+
+            try{
+                document.execCommand('copy');
+            } catch(err){
+                console.error("クリップボードコピー失敗:", err);
+                alert("コピーできませんでした。手動で選択してください。");
+            } finally{
+                document.body.removeChild(textarea);
+            }
+
+            return Promise.resolve();
+        }
+    };
+
     const $label = $(this).find('i');
 
     // 再度ボタンが有効化になるまでの時間 (ms)
     const enable_duration = 3000;
 
-    navigator.clipboard.writeText(password)
+    copyToClipboard(password)
         .then(() => {
             $(this).prop('disabled', true);
             $label.removeClass('bi-copy').addClass('bi-check2').addClass('btn-fade');
