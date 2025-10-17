@@ -1,16 +1,23 @@
 const SERVICE_CACHE_NAME = "pwdgen-cache-{{GIT_HASH}}";
 const SERVICE_FILES_TO_CACHE = [
+	// Resources
     "./",
     "./index.html",
     "./pwdgen.js",
     "./index.js",
     "./pwdgen.css",
     "./manifest.json",
+	"./favicon.ico",
+	"./icons/icon-256.png",
+	"./icons/icon-512.png",
+	// CDN
 	"https://code.jquery.com/jquery-3.7.1.min.js",
 	"https://code.jquery.com/ui/1.14.1/jquery-ui.min.js",
 	"https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js",
 	"https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css",
-	"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+	"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css",
+	// WebFont
+	"https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Noto+Sans+JP:wght@100..900&display=swap"
 ];
 
 self.addEventListener('install', (event) => {
