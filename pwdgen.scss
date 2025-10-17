@@ -168,3 +168,16 @@ footer {
 		margin-right: 8px;
 	}
 }
+
+.btn-primary, .btn-outline-primary:hover {
+	background-color: #2d8efd; /* 既定 */
+	transition: background-color 0.2s;
+}
+.btn-primary:hover {
+	background-color: #4aa3e8; /* やや軽い青 */
+}
+
+.form-check-input:checked {
+	background-color: #2d8efd;
+	border-color: #2d8efd;
+}

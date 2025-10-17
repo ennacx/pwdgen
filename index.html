@@ -9,7 +9,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0d6efd">
 
-    <title>ランダム文字列生成</title>
+    <title>ランダム文字列生成 | Random characters generator</title>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous" defer></script>
     <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous" defer></script>
@@ -53,7 +53,7 @@
             <span class="input-group-text">文字</span>
         </div>
 
-        <div class="card mt-4">
+        <div class="card shadow-none bg-transparent mt-4">
             <div class="card-header">文字種</div>
             <div class="card-body">
                 <div class="d-flex">
@@ -102,7 +102,7 @@
             </div>
         </div>
 
-        <div class="card mt-3">
+        <div class="card shadow-none bg-transparent mt-4">
             <div class="card-header">オプション</div>
             <div class="card-body">
                 <div class="d-flex">
@@ -123,7 +123,7 @@
             </div>
         </div>
 
-        <div class="card mt-3">
+        <div class="card shadow-none bg-transparent mt-4">
             <div class="card-header">アルゴリズム</div>
             <div class="card-body">
                 <div class="form-check form-check-inline">
@@ -138,12 +138,12 @@
             </div>
         </div>
 
-        <div class="d-grid gap-2 mt-3">
+        <div class="d-grid gap-2 mt-4">
             <button type="button" name="gen" class="btn btn-primary">文字列の生成</button>
         </div>
 
         <div id="validation-error"></div>
-        <div id="generate-result">
+        <div id="generate-result" class="mt-3">
             <div class="alert alert-primary w-100 mb-1">
                 <div class="d-flex">
                     <div id="generate-password"></div>
@@ -165,7 +165,7 @@
             </div>
         </div>
 
-        <div class="d-grid gap-2 mt-3">
+        <div class="d-grid gap-2 mt-2">
             <button type="button" value="100" class="bulk-gen btn btn-sm btn-outline-primary mt-4">100個同時に生成</button>
             <button type="button" value="1000" class="bulk-gen btn btn-sm btn-outline-primary">1,000個同時に生成</button>
             <button type="button" value="10000" class="bulk-gen btn btn-sm btn-outline-primary">10,000個同時に生成</button>

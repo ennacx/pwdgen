@@ -79,7 +79,7 @@ if(!window.crypto || typeof window.crypto.getRandomValues !== 'function' || type
 
 // サブタイトル表記変更
 $('div#subheader').html(
-    `<p>${(cryptReady) ? "Cryptアルゴリズムならパスワードにも使える！😀" : "Mathはパスワードにはオススメできない🤔"}</p>`
+    `<p>${(cryptReady) ? "Cryptアルゴリズムならパスワードに使える！😀" : "Mathはパスワードにはオススメできない🤔"}</p>`
 );
 
 // 登録済み記号一覧と、紛らわしい文字種一覧の表示

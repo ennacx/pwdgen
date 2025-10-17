@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Noto+Sans+JP:wght@100..900&display=swap");
 body {
   margin: 16px auto;
@@ -127,6 +128,20 @@ footer ul.copy-links li i {
 }
 #bulk-generate-result-modal i {
   margin-right: 8px;
+}
+
+.btn-primary, .btn-outline-primary:hover {
+  background-color: #2d8efd; /* 既定 */
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #4aa3e8; /* やや軽い青 */
+}
+
+.form-check-input:checked {
+  background-color: #2d8efd;
+  border-color: #2d8efd;
 }
 
 /*# sourceMappingURL=pwdgen.css.map */
