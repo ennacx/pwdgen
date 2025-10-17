@@ -3,8 +3,9 @@ const SERVICE_FILES_TO_CACHE = [
 	// Resources
     "./",
     "./index.html",
-    "./pwdgen.js",
     "./index.js",
+	"./pwdgen.js",
+	"./reg-service-worker.js",
     "./pwdgen.css",
     "./manifest.json",
 	"./favicon.ico",
