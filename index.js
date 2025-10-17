@@ -78,7 +78,7 @@ if(!window.crypto || typeof window.crypto.getRandomValues !== 'function' || type
 }
 
 // サブタイトル表記変更
-$('div#subheader').text(
+$('div#subheader').html(
     `<p>${(cryptReady) ? "Cryptアルゴリズムならパスワードにも使える！😀" : "Mathはパスワードにはオススメできない🤔"}</p>`
 );
 
