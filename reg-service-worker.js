@@ -4,7 +4,7 @@
  *
  * @return {void} This function does not return anything.
  */
-function update_network_status(){
+function updateNetworkStatus(){
 
 	const notice = document.getElementById('offline-notice');
 
@@ -19,9 +19,9 @@ function update_network_status(){
  * online and offline events.
  */
 window.addEventListener('load', () => {
-	update_network_status();
-	window.addEventListener('online', update_network_status);
-	window.addEventListener('offline', update_network_status);
+	updateNetworkStatus();
+	window.addEventListener('online', updateNetworkStatus);
+	window.addEventListener('offline', updateNetworkStatus);
 });
 
 /**

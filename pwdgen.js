@@ -175,7 +175,7 @@ const ENTROPY_STRENGTH = {
  * @param {number} bytes
  * @returns {Uint8Array}
  */
-function crypto_random_bytes(bytes){
+function cryptoRandomBytes(bytes){
 
     const a = new Uint8Array(bytes);
     crypto.getRandomValues(a);
@@ -188,7 +188,7 @@ function crypto_random_bytes(bytes){
  *
  * @returns {number} 0..2^32-1
  */
-function crypto_random_uint32(){
+function cryptoRandomUint32(){
 
     const a = new Uint32Array(1);
     crypto.getRandomValues(a);
@@ -202,10 +202,10 @@ function crypto_random_uint32(){
  * @param {number} n
  * @returns {number} 0..n-1
  */
-function crypto_random_index(n){
+function cryptoRandomIndex(n){
 
     if(!Number.isInteger(n))
-        throw new Error('crypto_random_index: invalid range');
+        throw new Error('cryptoRandomIndex: invalid range');
     if(n <= 0 || n > 0xFFFFFFFF)
         throw new Error('Argument `n` is out of range');
 
@@ -213,7 +213,7 @@ function crypto_random_index(n){
     const limit = Math.floor(range / n) * n; // accept値
 
     while(true){
-        const r = crypto_random_uint32();
+        const r = cryptoRandomUint32();
         if(r < limit){
             return r % n;
         }
@@ -226,22 +226,9 @@ function crypto_random_index(n){
  * @param   {*[]} array
  * @returns {*[]}
  */
-function array_unique(array){
+function arrayUnique(array){
 
-    const unique_array = [];
-    const known_elements = {};
-
-    for(let i = 0, maxi = array.length; i < maxi; i++){
-        // 重複時
-        if(array[i] in known_elements){
-            continue;
-        }
-
-        unique_array.push(array[i]);
-        known_elements[array[i]] = true;
-    }
-
-    return unique_array;
+    return [...new Set(array)];
 }
 
 /**
@@ -251,7 +238,7 @@ function array_unique(array){
  * @param   {boolean} [crypt = true]
  * @returns {*[]}
  */
-function array_shuffle(array, crypt = true){
+function arrayShuffle(array, crypt = true){
 
     const cloneArray = [...array];
     const buf = new Uint32Array(1);
@@ -261,7 +248,7 @@ function array_shuffle(array, crypt = true){
     for(let i = cloneArray.length - 1; i >= 0; i--){
         const tmpStorage = cloneArray[i];
         if(crypt){
-            // crypto_random_index()を使用せず速度向上と最適化を図る
+            // cryptoRandomIndex()を使用せず速度向上と最適化を図る
             crypto.getRandomValues(buf);
             rnd = buf[0] % (i + 1);
         } else{
@@ -276,20 +263,16 @@ function array_shuffle(array, crypt = true){
 }
 
 /**
- * Calculates the entropy (in bits) for a given length and character set size.
+ * Calculates the entropy based on the length of the input and the number of possible characters.
  *
- * The entropy is computed as the product of the length and the base-2 logarithm of the character set size.
- *
- * @param {number} length - The length of the string for which entropy is being calculated.
- * @param {number} charsetSize - The size of the character set being used.
- * @return {string} The calculated entropy, rounded to two decimal places.
+ * @param {number} length - The length of the input for which entropy is being calculated.
+ * @param {number} useCharacterCount - The number of possible unique characters used.
+ * @return {number} The calculated entropy value, rounded to two decimal places.
  */
-function calc_entropy(length, charsetSize){
+function calcEntropy(length, useCharacterCount){
 
     // L * log2(N)
-    const bits = length * Math.log2(charsetSize);
-
-    return bits.toFixed(2);
+    return Number((length * Math.log2(useCharacterCount)).toFixed(2));
 }
 
 /**
@@ -299,7 +282,7 @@ function calc_entropy(length, charsetSize){
  */
 function validation(opt){
 
-    if(!opt.alpha_u && !opt.alpha_l && !opt.numeric && !opt.symbol && !opt.hex && !opt.uuid)
+    if(!(opt.alpha_u || opt.alpha_l || opt.numeric || opt.symbol || opt.hex || opt.uuid))
         return "文字種を選択して下さい。";
     if(opt.length < PWD_LEN_MIN || opt.length > PWD_LEN_MAX)
         return `文字数は${PWD_LEN_MIN}以上${PWD_LEN_MAX}以下の制限があります。`;
@@ -333,7 +316,7 @@ function validation(opt){
         }
 
         if(opt.mislead){
-            max_length -= filter_mislead_symbols(opt).length;
+            max_length -= filterMisleadSymbols(opt).length;
         }
 
         if(max_length <= 0)
@@ -353,7 +336,7 @@ function validation(opt){
  * @param {OPTION} opt
  * @returns {string}
  */
-function filter_mislead_symbols(opt){
+function filterMisleadSymbols(opt){
 
     let mislead_symbols = '';
 
@@ -383,7 +366,7 @@ function filter_mislead_symbols(opt){
  * @param {OPTION} opt
  * @returns {string[]}
  */
-function filter_use_characters(opt){
+function filterUseCharacters(opt){
 
     let use_chars = '';
     if(opt.use_type === 'default'){
@@ -410,12 +393,12 @@ function filter_use_characters(opt){
         }
     }
 
-    const mislead_symbols = filter_mislead_symbols(opt);
+    const mislead_symbols = filterMisleadSymbols(opt);
     for(let mislead_symbol of mislead_symbols){
         use_chars = use_chars.replace(mislead_symbol, '');
     }
 
-    return array_shuffle(use_chars.split(''), opt.algorithm === 'crypt');
+    return arrayShuffle([...use_chars], opt.algorithm === 'crypt');
 }
 
 /**
@@ -440,8 +423,10 @@ function generate(algo, len, use_chars, is_unique){
 
     // cryptoベースの安全な生成
     if(algo === 'crypt'){
+        const buf = new Uint32Array(1);
         while(password.length < len){
-            const idx = crypto_random_index(chars_len);
+            crypto.getRandomValues(buf);
+            const idx = buf[0] % chars_len;
             const char = chars[idx];
 
             if(!is_unique || !used_chars.has(char)){
@@ -475,12 +460,12 @@ function generate(algo, len, use_chars, is_unique){
  * @param {OPTION} opt
  * @returns {RESULT|null}
  */
-function password_generate(opt){
+function passwordGenerate(opt){
 
     if(!opt.validate)
         return null;
 
-    const temp = bulk_password_generate(opt, PWD_GENERATE_COUNT);
+    const temp = bulkPasswordGenerate(opt, PWD_GENERATE_COUNT);
 
     return (temp !== null) ? temp[Math.floor(Math.random() * temp.length)] : null;
 }
@@ -492,7 +477,7 @@ function password_generate(opt){
  * @param {Number} count
  * @returns {RESULT[]|null}
  */
-function bulk_password_generate(opt, count){
+function bulkPasswordGenerate(opt, count){
 
     if(!opt.validate || count < 1)
         return null;
@@ -503,13 +488,13 @@ function bulk_password_generate(opt, count){
     else if(count > PWD_BULK_MAX)
         count = PWD_BULK_MAX;
 
-    let use_chars = filter_use_characters(opt);
+    let use_chars = filterUseCharacters(opt);
 
     const passwordResults = [];
     for(let i = 0; i < count; i++){
         // 文字種配列の順番を20%の確率で入れ替え
         if(Math.floor(Math.random() * 100) < 20){
-            use_chars = array_shuffle(use_chars);
+            use_chars = arrayShuffle(use_chars);
         }
 
         const st_time = performance.now();
@@ -519,7 +504,7 @@ function bulk_password_generate(opt, count){
         const result = { ...RESULT };
         result.password = password;
         result.length = opt.length;
-        result.entropy = calc_entropy(opt.length, use_chars.length);
+        result.entropy = calcEntropy(opt.length, use_chars.length);
         result.charset_size = use_chars.length;
         result.algorithm = opt.algorithm;
         result.generate_time = ed_time - st_time;
@@ -535,7 +520,7 @@ function bulk_password_generate(opt, count){
  *
  * @returns {RESULT}
  */
-function uuid_generate(){
+function uuidGenerate(){
 
     const st_time = performance.now();
     const password = crypto.randomUUID();
@@ -558,12 +543,12 @@ function uuid_generate(){
  * @param {Number} count
  * @returns {string[]}
  */
-function bulk_uuid_generate(count){
+function bulkUuidGenerate(count){
 
     const uuids = [];
 
     for(let i = 0; i < count; i++){
-        uuids.push(uuid_generate());
+        uuids.push(uuidGenerate());
     }
 
     return uuids;

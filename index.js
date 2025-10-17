@@ -49,10 +49,10 @@ const $bulk_textarea = $bulk_generate_result.find('textarea[name="bulk_password"
 const $bulk_download = $('#bulk-generate-result-modal a#bulk-generate-download');
 
 // コンテンツ表示のアニメーション速度
-const anim_duration = 100;
+const ANIM_DURATION_MS = 100;
 
 // Crypt実装フラグ
-let crypt_ready = true;
+let cryptReady = true;
 
 // 文字列長の最低値/最大値を設定
 $slider.attr('min', PWD_LEN_MIN);
@@ -63,7 +63,7 @@ $len_box.attr('max', PWD_LEN_MAX);
 // Crypt実装チェック
 if(!window.crypto || typeof window.crypto.getRandomValues !== 'function' || typeof window.crypto.randomUUID !== 'function'){
     // フラグ更新
-    crypt_ready = false;
+    cryptReady = false;
 
     // UUIDの生成無効化
     $uuid_chk.prop('disabled', true);
@@ -74,14 +74,12 @@ if(!window.crypto || typeof window.crypto.getRandomValues !== 'function' || type
     $('input[name="algorithm"][value="math"]').prop('checked', true);
 
     // 警告メッセージ表示
-    $algo_err.show(anim_duration);
+    $algo_err.show(ANIM_DURATION_MS);
 }
 
 // サブタイトル表記変更
 $('div#subheader').text(
-    '<p>'
-    + (crypt_ready) ? "Cryptアルゴリズムならパスワードにも使える！😀" : "パスワードにはオススメできない🤔"
-    + '</p>'
+    `<p>${(cryptReady) ? "Cryptアルゴリズムならパスワードにも使える！😀" : "Mathはパスワードにはオススメできない🤔"}</p>`
 );
 
 // 登録済み記号一覧と、紛らわしい文字種一覧の表示
@@ -92,15 +90,26 @@ $('#mislead-samples').text(MISLEAD_SYMBOLS);
 $use_type_box.val(OPTION.use_type);
 
 /**
+ * Displays a validation error message within the designated HTML element.
+ *
+ * @param {string} message - The validation error message to be displayed.
+ * @return {void} This method does not return a value.
+ */
+function showValidationError(message){
+    $validation_error
+        .html(`<div class="alert alert-danger">${message}</div>`)
+        .show(ANIM_DURATION_MS);
+}
+
+/**
  * 文字種"記号"チェックボックス制御
  */
 const changeSymbolCheck = () => {
 
-    if($sym_chk.prop('checked')){
-        $symbol_info.show(anim_duration);
-    } else{
-        $symbol_info.hide(anim_duration);
-    }
+    if($sym_chk.prop('checked'))
+        $symbol_info.show(ANIM_DURATION_MS);
+    else
+        $symbol_info.hide(ANIM_DURATION_MS);
 };
 $sym_chk.change(changeSymbolCheck);
 
@@ -138,7 +147,7 @@ $('.hex-check').change(function(){
 
         $('.default-check').prop('checked', false);
         $uuid_chk.prop('checked', false);
-        $symbol_info.hide(anim_duration);
+        $symbol_info.hide(ANIM_DURATION_MS);
 
         $unq_chk.prop('disabled', false);
         $mis_chk.prop('checked', false).prop('disabled', true);
@@ -173,7 +182,7 @@ $('.uuid-check').change(function(){
 
         $('.default-check').prop('checked', false);
         $hex_chk.prop('checked', false);
-        $symbol_info.hide(anim_duration);
+        $symbol_info.hide(ANIM_DURATION_MS);
 
         $unq_chk.prop('checked', false).prop('disabled', true);
         $mis_chk.prop('checked', false).prop('disabled', true);
@@ -225,9 +234,9 @@ $('.uuid-check').change(function(){
  *      validate: boolean
  * }}
  */
-const set_option = () => {
+const setOption = () => {
 
-    const opt = OPTION;
+    const opt = { ...OPTION };
 
     opt.length   = parseInt($len_box.val());
     opt.use_type = $use_type_box.val();
@@ -243,7 +252,7 @@ const set_option = () => {
     opt.mislead = $mis_chk.prop('checked');
 
     opt.algorithm = $('input[name="algorithm"]:checked').val();
-    if(opt.algorithm === 'crypt' && !crypt_ready){
+    if(opt.algorithm === 'crypt' && !cryptReady){
         opt.algorithm = 'math';
     }
 
@@ -256,24 +265,24 @@ const set_option = () => {
 let password;
 
 // コピーボタン無効化タイムアウトIDの格納変数
-let copy_btn_timeout_id = null;
+let copyBtnTimeoutId = null;
 
 /**
  * コピーボタンの有効化
  */
-const enable_copy_btn = () => {
+const enableCopyBtn = () => {
 
     // タイムアウト処理中の場合のみ処理
-    if(copy_btn_timeout_id !== null){
+    if(copyBtnTimeoutId !== null){
         // コピーボタン有効化
         $password_copy_btn.find('i').removeClass('bi-check2').addClass('bi-copy');
         $password_copy_btn.prop('disabled', false);
 
         // タイムアウトを無効化
-        clearTimeout(copy_btn_timeout_id);
+        clearTimeout(copyBtnTimeoutId);
 
         // IDを初期化
-        copy_btn_timeout_id = null;
+        copyBtnTimeoutId = null;
     }
 }
 
@@ -288,7 +297,7 @@ $generate_btn.click(() => {
     $bulk_textarea.text('');
     $bulk_textarea.val('');
 
-    const opt = set_option();
+    const opt = setOption();
 
     // バリデーション
     const validate = validation(opt);
@@ -297,12 +306,12 @@ $generate_btn.click(() => {
     if(validate !== null){
         $generate_result.hide();
 
-        $validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
-        $validation_error.show(anim_duration);
+        // メッセージ表示
+        showValidationError(validate);
     }
     // バリデーションエラー無し
     else{
-        const result = (!opt.uuid) ? password_generate(opt) : uuid_generate();
+        const result = (!opt.uuid) ? passwordGenerate(opt) : uuidGenerate();
         if(result !== null){
             password = result.password;
 
@@ -314,9 +323,9 @@ $generate_btn.click(() => {
             $generate_result.find("#entropy-bar").css('width', `${Math.min(entropy / 128, 1) * 100}%`); // エントロピーバー | 128bitを最大強度とみなす
             $generate_result.find("#entropy-bar").removeClass().addClass('progress-bar').addClass(`bg-${ENTROPY_STRENGTH.get_bar_class(entropy)}`); // エントロピーバーの色
             $generate_result.find('span#gen-ms-value').text(result.generate_time.toLocaleString()); // 生成速度
-            $generate_result.show(anim_duration);
+            $generate_result.show(ANIM_DURATION_MS);
 
-            enable_copy_btn();
+            enableCopyBtn();
         } else{
             $generate_result.hide();
         }
@@ -326,17 +335,16 @@ $generate_btn.click(() => {
 /**
  * 複数文字列の生成ボタンクリック
  */
-$bulk_generate_btn.click(function(){
+$bulk_generate_btn.click(async function(){
 
-    new Promise((resolve) => {
+    try{
         $bulk_generate_btn.prop('disabled', true);
-        resolve();
-    }).then(() => {
+
         $validation_error.hide();
         $validation_error.empty();
         $generate_result.hide();
-    }).then(() => {
-        const opt = set_option();
+
+        const opt = setOption();
 
         // バリデーション
         const validate = validation(opt);
@@ -346,13 +354,15 @@ $bulk_generate_btn.click(function(){
             $bulk_textarea.text('');
             $bulk_textarea.val('');
 
-            $validation_error.append(`<div class="alert alert-danger">${validate}</div>`);
-            $validation_error.show(anim_duration);
+            // メッセージ表示
+            showValidationError(validate);
+
+            return;
         }
         // バリデーションエラー無し
         else{
             const count = parseInt($(this).val());
-            const results = (!opt.uuid) ? bulk_password_generate(opt, count) : bulk_uuid_generate(count);
+            const results = (!opt.uuid) ? bulkPasswordGenerate(opt, count) : bulkUuidGenerate(count);
 
             if(results !== null){
                 const passwords = results.map((v) => v.password).join("\n");
@@ -374,16 +384,16 @@ $bulk_generate_btn.click(function(){
 
             $bulk_value_label.text(count.toLocaleString());
         }
-    }).then(() => {
+
         const modal = new bootstrap.Modal('#bulk-generate-result-modal');
         modal.show();
-    }).then(() => {
+
         $bulk_generate_btn.prop('disabled', false);
-    }).catch(() => {
+    } catch(e){
         $bulk_generate_btn.prop('disabled', false);
 
         window.alert("複数文字列の生成に失敗しました。");
-    });
+    }
 });
 
 /**
@@ -403,13 +413,13 @@ $password_copy_btn.click(function(){
             $label.removeClass('bi-copy').addClass('bi-check2');
 
             // 時限で元に戻す処理
-            copy_btn_timeout_id = setTimeout(() => {
+            copyBtnTimeoutId = setTimeout(() => {
                 // コピーボタン有効化
                 $label.removeClass('bi-check2').addClass('bi-copy');
                 $(this).prop('disabled', false);
 
                 // IDを初期化
-                copy_btn_timeout_id = null;
+                copyBtnTimeoutId = null;
             }, enable_duration);
         },
         () => {
@@ -460,10 +470,10 @@ initializeSlider();
 // 登録記号一覧の配列
 const symbols = SYMBOL.split('');
 // 登録記号(全角)一覧の配列
-const symbols_zen = SYMBOL_ZEN.split('');
+const symbolsZen = SYMBOL_ZEN.split('');
 
 // 登録記号以外を排除する際に使用する正規表現
-const ignore_symbol_regexp_pattern = `[^${SYMBOL.replace('-', '\-').replace(']', '\]').replace('\\', '\\\\')}]`;
+const ignoreSymbolRegexp = new RegExp(`[^${SYMBOL.replace(/[-\\\]]/g, '\\$&')}]`, 'g');
 
 /**
  * 含ませたくない記号入力フォームの内容変更
@@ -474,11 +484,11 @@ $ignore_symbol_box.on('change', function(e){
     const temp = [];
 
     for(let char of val){
-        const index = symbols_zen.indexOf(char);
+        const index = symbolsZen.indexOf(char);
         temp.push((index >= 0) ? symbols[index] : char);
     }
 
-    $(this).val((temp.length > 0) ? array_unique(temp).join('').replace(new RegExp(ignore_symbol_regexp_pattern, 'g'), '') : '');
+    $(this).val((temp.length > 0) ? arrayUnique(temp).join('').replace(ignoreSymbolRegexp, '') : '');
 });
 
 /**
