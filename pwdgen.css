@@ -205,6 +205,14 @@ footer ul.copy-links li i {
   color: #fff;
 }
 
+.btn-fade {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+.btn-fade.fade-out {
+  opacity: 0;
+}
+
 .form-control {
   background-color: #f9fafb;
   box-shadow: none;

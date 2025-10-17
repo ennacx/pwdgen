@@ -406,23 +406,25 @@ $password_copy_btn.click(function(){
     // 再度ボタンが有効化になるまでの時間 (ms)
     const enable_duration = 3000;
 
-    navigator.clipboard.writeText(password).then(
-        () => {
-            // コピーボタン無効化
+    navigator.clipboard.writeText(password)
+        .then(() => {
             $(this).prop('disabled', true);
-            $label.removeClass('bi-copy').addClass('bi-check2');
+            $label.removeClass('bi-copy').addClass('bi-check2').addClass('btn-fade');
 
-            // 時限で元に戻す処理
+            // 1秒後にフェードアウト開始
+            setTimeout(() => {
+                $label.addClass('fade-out');
+            }, enable_duration - 300); // 残り0.5秒でフェード開始
+
+            // 完全に消えたらリセット
             copyBtnTimeoutId = setTimeout(() => {
-                // コピーボタン有効化
-                $label.removeClass('bi-check2').addClass('bi-copy');
+                $label.removeClass('fade-out btn-fade bi-check2').addClass('bi-copy');
                 $(this).prop('disabled', false);
-
-                // IDを初期化
                 copyBtnTimeoutId = null;
             }, enable_duration);
-        },
-        () => {
+        })
+        .catch((err) => {
+            console.log(err);
             window.alert("コピーに失敗しました。");
         });
 });

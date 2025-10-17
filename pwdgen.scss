@@ -245,6 +245,15 @@ footer {
 	}
 }
 
+.btn-fade {
+	opacity: 1;
+	transition: opacity 0.3s ease-in-out;
+
+	&.fade-out {
+		opacity: 0;
+	}
+}
+
 .form-control {
 	background-color: $bg_color;
 	box-shadow: none;
