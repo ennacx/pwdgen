@@ -7,6 +7,7 @@
 $bg_color: #f9fafb;
 $default_color: #2d8efd;
 $light_color: #4aa3f8;
+$dark_color: rgba(45, 142, 253, 0.35);
 $font_color: #111827;
 
 $footer_height: 36px;
@@ -15,7 +16,8 @@ $mono_font: "Atkinson Hyperlegible Mono", monospace;
 
 // モーションを足す
 *:not(#generate-result):not(.progress-bar) {
-	transition: all 0.15s ease-in-out;
+	// transition範囲を限定してSafariのフォームズレ回避
+	transition: opacity 0.15s ease, transform 0.2s ease, background-color 0.2s ease;
 }
 
 body {
@@ -25,6 +27,8 @@ body {
 	font-family: $default_font;
 	font-size: 0.93rem;
 	color: $font_color;
+
+	-webkit-font-smoothing: antialiased;
 }
 
 @media (min-width: 719.98px) {
@@ -114,6 +118,20 @@ footer {
 			i {
 				margin-right: 4px;
 			}
+		}
+	}
+}
+
+/* iOS Safari限定フォールバック */
+@supports (-webkit-backdrop-filter: none) {
+	footer {
+		-webkit-backdrop-filter: blur(4px);
+		backdrop-filter: blur(4px);
+	}
+
+	.form-control {
+		&:focus {
+			box-shadow: 0 0 3px $dark_color;
 		}
 	}
 }
@@ -257,6 +275,20 @@ footer {
 .form-control {
 	background-color: $bg_color;
 	box-shadow: none;
+
+	&:focus {
+		border-color: $default_color;
+		box-shadow: 0 0 0 .1rem $dark_color;
+		outline: none;
+	}
+}
+
+.form-check-input {
+	&:focus {
+		border-color: $default_color;
+		box-shadow: none;
+		outline: none;
+	}
 }
 
 .form-range {
@@ -280,6 +312,8 @@ footer {
 	transition: width 0.4s ease, background-color 0.4s ease;
 }
 .strength-emoji {
+	will-change: transform;
+
 	display: inline-block;
 	font-size: 1.2rem;
 	transition: transform 0.25s ease-out, opacity 0.3s ease-out;
