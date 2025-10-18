@@ -489,31 +489,47 @@ $len_box.on('keyup change', function(e){
 
     // 入力数調整
     let new_val = (val === '' || isNaN(val)) ? PWD_LEN_MIN : parseInt(val);
-    if(new_val < PWD_LEN_MIN) {
+    if(new_val < PWD_LEN_MIN)
         new_val = PWD_LEN_MIN;
-    } else if(new_val > PWD_LEN_MAX){
+    else if(new_val > PWD_LEN_MAX)
         new_val = PWD_LEN_MAX;
-    }
 
     $slider.val(new_val);
     $len_box.val(new_val);
 });
 
 /**
- * スライダーの結果を文字列長入力フォームに即時反映
+ * スライダーと文字列長入力フォームの連携（双方向・ループ防止付き）
  */
-const updateInterestRate = () => {
-    $len_box.val($slider.val());
-};
+let isPwdLengthSyncing = false;
+const syncSliderAndInput = () => {
 
-/**
- * スライダーと文字列長入力フォームの連携初期化
- */
-const initializeSlider = () => {
-    updateInterestRate();
-    $slider.on('input', updateInterestRate)
+    // 初期値を合わせる
+    $len_box.val($slider.val());
+
+    // スライダー操作から入力フォーム更新
+    $slider.on('input change', function() {
+        // スライダーと文字列長入力フォームの連動ループ防止
+        if(isPwdLengthSyncing)
+            return;
+
+        isPwdLengthSyncing = true;
+        $len_box.val($(this).val());
+        isPwdLengthSyncing = false;
+    });
+
+    // 入力フォームからスライダー更新
+    $len_box.on('input change', function() {
+        // スライダーと文字列長入力フォームの連動ループ防止
+        if(isPwdLengthSyncing)
+            return;
+
+        isPwdLengthSyncing = true;
+        $slider.val($(this).val());
+        isPwdLengthSyncing = false;
+    });
 };
-initializeSlider();
+syncSliderAndInput();
 
 // 登録記号一覧の配列
 const symbols = SYMBOL.split('');
