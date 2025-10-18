@@ -1,13 +1,26 @@
 <!DOCTYPE html>
-<html lang="ja" class="h-100">
+<html lang="ja" translate="no" class="h-100">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="robots" content="index,follow" />
     <meta name="keywords" content="ランダム文字列,ランダム文字列生成,ランダム文字列作成,パスワード生成,パスワード作成" />
+    <meta name="description" lang="ja" content="安全で高速なランダム文字列・パスワード生成ツール。ブラウザだけで動作し、暗号学的乱数を使用して強力なパスワードを作成します。オフライン対応で、スマートフォンからも利用可能です。" />
+    <meta name="description" lang="en" content="A secure and fast random string and password generator using cryptographically strong randomness, works offline." />
 
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0d6efd">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ランダム文字列生成" />
+    <meta property="og:description" content="ブラウザだけで安全で高速なランダムパスワードを生成。オフラインでも動作。" />
+    <meta property="og:url" content="https://ennacx.github.io/pwdgen/" />
+    <meta property="og:image" content="https://ennacx.github.io/pwdgen/icon-512.png" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="ランダム文字列生成" />
+    <meta name="twitter:description" content="ブラウザだけで安全で高速なランダムパスワードを生成。オフラインでも動作。" />
+    <meta name="twitter:image" content="https://ennacx.github.io/pwdgen/icon-512.png" />
+
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#2D8EFD" />
 
     <title>ランダム文字列生成 | Random characters generator</title>
 
@@ -23,12 +36,31 @@
 
     <link rel="stylesheet" href="pwdgen.css">
 
-    <link href="favicon.ico" type="image/x-icon" rel="icon">
-    <link href="favicon.ico" type="image/x-icon" rel="shortcut icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="icons/icon-256.png" type="image/png" sizes="256x256" />
+    <link rel="apple-touch-icon" href="icons/icon-512.png" sizes="512x512" />
 
     <script>
         if(location.protocol !== 'https:'){
             alert("安全な接続 (HTTPS) を推奨します。");
+        }
+    </script>
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "pwdgen",
+            "applicationCategory": "Utility",
+            "operatingSystem": "Web",
+            "description": "安全で高速なランダム文字列・パスワード生成ツール。暗号学的乱数を使用し、オフラインでも動作します。",
+            "url": "https://ennacx.github.io/pwdgen/",
+            "image": "https://ennacx.github.io/pwdgen/icons/icon-512.png",
+            "creator": {
+                "@type": "Person",
+                "name": "ennacx"
+            }
         }
     </script>
 </head>
@@ -39,6 +71,7 @@
         <h2>Random characters generator</h2>
 
         <div id="subheader">
+            <p class="d-none">暗号学的乱数で安全なパスワードを簡単生成。オフラインでも使えます。</p>
             <p>パスワードにも使える😀&nbsp;(かもしれない🤔)</p>
         </div>
 
@@ -54,6 +87,8 @@
         </div>
 
         <div class="card shadow-none bg-transparent mt-4">
+            <h2 class="d-none">パスワードを生成</h2>
+
             <div class="card-header">文字種</div>
             <div class="card-body">
                 <div class="d-flex">
@@ -144,6 +179,8 @@
 
         <div id="validation-error"></div>
         <div id="generate-result" class="mt-3">
+            <h2 class="d-none">生成結果</h2>
+
             <div class="alert alert-primary w-100 mb-1">
                 <div class="d-flex">
                     <div id="generate-password"></div>
@@ -174,7 +211,8 @@
 
     <footer class="d-flex">
         <div class="disclaimer">
-            <p>本ツールの使用によりトラブルが発生した場合、私たちは一切の責任を負いません。</p>
+            <p>このツールはブラウザ上で安全なランダム文字列を生成します。生成された文字列は保存されず、すべてローカル処理で行われます。</p>
+            <p>なお、本ツールの使用によりトラブルが発生した場合、私たちは一切の責任を負いません。</p>
         </div>
         <div class="ms-auto">
             <ul class="list-group list-group-horizontal copy-links">

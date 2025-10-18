@@ -1,6 +1,7 @@
 {
   "name": "Random characters generator",
   "short_name": "PwdGen",
+  "description": "A secure random string and password generator that uses cryptographically strong random values and works fully offline.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
