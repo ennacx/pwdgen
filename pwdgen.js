@@ -124,56 +124,56 @@ const RESULT = {
  *   @returns {string} The emoji for the corresponding entropy level.
  */
 const ENTROPY_STRENGTH = {
-	/**
-	 * Represents a configuration object for a "deadly" status.
-	 *
-	 * @property {number} threshold - The numerical value representing the limit to be considered deadly.
-	 * @property {string} bar_class - CSS class name associated with the deadly status for styling a progress bar or similar UI element.
-	 * @property {string} label - A label or short descriptor for the deadly status.
-	 * @property {string} emoji - An emoji representing or associated with the deadly status.
-	 */
+    /**
+     * Represents a configuration object for a "deadly" status.
+     *
+     * @property {number} threshold - The numerical value representing the limit to be considered deadly.
+     * @property {string} bar_class - CSS class name associated with the deadly status for styling a progress bar or similar UI element.
+     * @property {string} label - A label or short descriptor for the deadly status.
+     * @property {string} emoji - An emoji representing or associated with the deadly status.
+     */
     deadly: { threshold: 60, bar_class: 'danger', label: "危", emoji: "🐣" },
 
-	/**
-	 * Represents a configuration object for a "weakly" status.
-	 *
-	 * @property {number} threshold - The numerical value representing the limit to be considered weakly.
-	 * @property {string} bar_class - CSS class name associated with the weakly status for styling a progress bar or similar UI element.
-	 * @property {string} label - A label or short descriptor for the weakly status.
-	 * @property {string} emoji - An emoji representing or associated with the weakly status.
-	 */
+    /**
+     * Represents a configuration object for a "weakly" status.
+     *
+     * @property {number} threshold - The numerical value representing the limit to be considered weakly.
+     * @property {string} bar_class - CSS class name associated with the weakly status for styling a progress bar or similar UI element.
+     * @property {string} label - A label or short descriptor for the weakly status.
+     * @property {string} emoji - An emoji representing or associated with the weakly status.
+     */
     weakly: { threshold: 90, bar_class: 'warning', label: "弱", emoji: "💪" },
 
-	/**
-	 * Represents a configuration object for a "cautious" status.
-	 *
-	 * @property {number} threshold - The numerical value representing the limit to be considered cautious.
-	 * @property {string} bar_class - CSS class name associated with the cautious status for styling a progress bar or similar UI element.
-	 * @property {string} label - A label or short descriptor for the cautious status.
-	 * @property {string} emoji - An emoji representing or associated with the cautious status.
-	 */
+    /**
+     * Represents a configuration object for a "cautious" status.
+     *
+     * @property {number} threshold - The numerical value representing the limit to be considered cautious.
+     * @property {string} bar_class - CSS class name associated with the cautious status for styling a progress bar or similar UI element.
+     * @property {string} label - A label or short descriptor for the cautious status.
+     * @property {string} emoji - An emoji representing or associated with the cautious status.
+     */
     cautious: { threshold: 128, bar_class: 'success', label: "中", emoji: "🦾" },
 
-	/**
-	 * Represents a configuration object for a "safety" status.
-	 *
-	 * @property {number} threshold - The numerical value representing the limit to be considered safety.
-	 * @property {string} bar_class - CSS class name associated with the safety status for styling a progress bar or similar UI element.
-	 * @property {string} label - A label or short descriptor for the safety status.
-	 * @property {string} emoji - An emoji representing or associated with the safety status.
-	 */
+    /**
+     * Represents a configuration object for a "safety" status.
+     *
+     * @property {number} threshold - The numerical value representing the limit to be considered safety.
+     * @property {string} bar_class - CSS class name associated with the safety status for styling a progress bar or similar UI element.
+     * @property {string} label - A label or short descriptor for the safety status.
+     * @property {string} emoji - An emoji representing or associated with the safety status.
+     */
     safety: { threshold: 65536, bar_class: 'primary', label: "強", emoji: "🛡️" },
 
-	/**
-	 * Determines the CSS class for a bar based on the provided value and predefined thresholds.
-	 *
-	 * This function evaluates the provided value against multiple thresholds (`deadly`, `weakly`,
-	 * `cautious`, and `safety`) and returns the respective CSS class associated with the matching threshold.
-	 * If the value does not meet any of the conditions, a default CSS class of 'dark' is returned.
-	 *
-	 * @param {number} v - The numeric value to evaluate.
-	 * @returns {string} The CSS class name corresponding to the evaluated threshold or 'dark' as the default.
-	 */
+    /**
+     * Determines the CSS class for a bar based on the provided value and predefined thresholds.
+     *
+     * This function evaluates the provided value against multiple thresholds (`deadly`, `weakly`,
+     * `cautious`, and `safety`) and returns the respective CSS class associated with the matching threshold.
+     * If the value does not meet any of the conditions, a default CSS class of 'dark' is returned.
+     *
+     * @param {number} v - The numeric value to evaluate.
+     * @returns {string} The CSS class name corresponding to the evaluated threshold or 'dark' as the default.
+     */
     getBarClass: function(v){
         if(v < this.deadly.threshold)
             return this.deadly.bar_class;
@@ -187,18 +187,18 @@ const ENTROPY_STRENGTH = {
             return 'dark';
     },
 
-	/**
-	 * Determines and returns the appropriate label based on the given value compared to predefined thresholds.
-	 *
-	 * If the value is less than the `deadly.threshold`, it returns `deadly.label`.
-	 * If the value is less than the `weakly.threshold` but greater than or equal to `deadly.threshold`, it returns `weakly.label`.
-	 * If the value is less than the `cautious.threshold` but greater than or equal to `weakly.threshold`, it returns `cautious.label`.
-	 * If the value is less than the `safety.threshold` but greater than or equal to `cautious.threshold`, it returns `safety.label`.
-	 * Otherwise, it returns an empty string.
-	 *
-	 * @param {number} v - The value to be compared against the thresholds.
-	 * @returns {string} The corresponding label based on the thresholds, or an empty string if no thresholds are met.
-	 */
+    /**
+     * Determines and returns the appropriate label based on the given value compared to predefined thresholds.
+     *
+     * If the value is less than the `deadly.threshold`, it returns `deadly.label`.
+     * If the value is less than the `weakly.threshold` but greater than or equal to `deadly.threshold`, it returns `weakly.label`.
+     * If the value is less than the `cautious.threshold` but greater than or equal to `weakly.threshold`, it returns `cautious.label`.
+     * If the value is less than the `safety.threshold` but greater than or equal to `cautious.threshold`, it returns `safety.label`.
+     * Otherwise, it returns an empty string.
+     *
+     * @param {number} v - The value to be compared against the thresholds.
+     * @returns {string} The corresponding label based on the thresholds, or an empty string if no thresholds are met.
+     */
     getLabel: function(v){
         if(v < this.deadly.threshold)
             return this.deadly.label;
@@ -212,15 +212,15 @@ const ENTROPY_STRENGTH = {
             return '';
     },
 
-	/**
-	 * Determines and returns the appropriate emoji based on the input value and defined thresholds.
-	 *
-	 * Compares the input value against predefined thresholds (`deadly`, `weakly`, `cautious`, `safety`)
-	 * and returns the corresponding emoji for the range in which the value falls.
-	 *
-	 * @param {number} v - The value to evaluate and compare against the thresholds.
-	 * @returns {string} The emoji associated with the range of the given value, or an empty string if no range matches.
-	 */
+    /**
+     * Determines and returns the appropriate emoji based on the input value and defined thresholds.
+     *
+     * Compares the input value against predefined thresholds (`deadly`, `weakly`, `cautious`, `safety`)
+     * and returns the corresponding emoji for the range in which the value falls.
+     *
+     * @param {number} v - The value to evaluate and compare against the thresholds.
+     * @returns {string} The emoji associated with the range of the given value, or an empty string if no range matches.
+     */
     getEmoji: function(v){
         if(v < this.deadly.threshold)
             return this.deadly.emoji;
@@ -314,23 +314,23 @@ function arrayShuffle(array, crypt = true){
 
     for(let i = cloneArray.length - 1; i >= 0; i--){
         if(crypt){
-			// crypto未実装環境下で処理された場合のフォールバック
-	        try{
-		        // cryptoRandomIndex()を使用せず速度向上と最適化を図る
-		        crypto.getRandomValues(buf);
-		        rnd = buf[0] % (i + 1);
-	        } catch(e){
-		        // fallback to Math.random() if crypto is unavailable or blocked
-		        console.warn("Crypto unavailable, falling back to `Math.random()`.", e);
+            // crypto未実装環境下で処理された場合のフォールバック
+            try{
+                // cryptoRandomIndex()を使用せず速度向上と最適化を図る
+                crypto.getRandomValues(buf);
+                rnd = buf[0] % (i + 1);
+            } catch(e){
+                // fallback to Math.random() if crypto is unavailable or blocked
+                console.warn("Crypto unavailable, falling back to `Math.random()`.", e);
 
-		        rnd = Math.floor(Math.random() * (i + 1));
-	        }
+                rnd = Math.floor(Math.random() * (i + 1));
+            }
         } else{
             rnd = Math.floor(Math.random() * (i + 1));
         }
 
-		// ループ中のインデックスとランダム選出されたインデックスの要素を入れ替え
-	    const tempChar = cloneArray[i];
+        // ループ中のインデックスとランダム選出されたインデックスの要素を入れ替え
+        const tempChar = cloneArray[i];
         cloneArray[i] = cloneArray[rnd];
         cloneArray[rnd] = tempChar;
     }
@@ -489,7 +489,7 @@ function filterUseCharacters(opt){
 function generate(algo, len, useChars, isUnique){
 
     const password = [];
-	const chars = (Array.isArray(useChars)) ? useChars : useChars.split('');
+    const chars = (Array.isArray(useChars)) ? useChars : useChars.split('');
     const usedChars = new Set();
     const charsLen = chars.length;
 
@@ -561,7 +561,7 @@ function bulkPasswordGenerate(opt, count){
         count = PWD_BULK_MAX;
 
     let useChars = filterUseCharacters(opt);
-	let entropy = undefined;
+    let entropy = undefined;
 
     const passwordResults = [];
     for(let i = 0; i < count; i++){
@@ -569,9 +569,9 @@ function bulkPasswordGenerate(opt, count){
         if(Math.floor(Math.random() * 100) < 20)
             useChars = arrayShuffle(useChars);
 
-		// エントロピーの算出
-	    if(entropy === undefined)
-		    entropy = calcEntropy(opt.length, useChars.length);
+        // エントロピーの算出
+        if(entropy === undefined)
+            entropy = calcEntropy(opt.length, useChars.length);
 
         const stTime = performance.now();
         const password = generate(opt.algorithm, opt.length, useChars, opt.unique);

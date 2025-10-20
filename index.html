@@ -8,34 +8,41 @@
     <meta name="description" lang="ja" content="安全で高速なランダム文字列・パスワード生成ツール。ブラウザだけで動作し、暗号学的乱数を使用して強力なパスワードを作成します。オフライン対応で、スマートフォンからも利用可能です。" />
     <meta name="description" lang="en" content="A secure and fast random string and password generator using cryptographically strong randomness, works offline." />
 
+    <!-- OGP -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="ランダム文字列生成" />
     <meta property="og:description" content="ブラウザだけで安全で高速なランダムパスワードを生成。オフラインでも動作。" />
     <meta property="og:url" content="https://ennacx.github.io/pwdgen/" />
     <meta property="og:image" content="https://ennacx.github.io/pwdgen/icon-512.png" />
-
+    <!-- OGP:twitter -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="ランダム文字列生成" />
     <meta name="twitter:description" content="ブラウザだけで安全で高速なランダムパスワードを生成。オフラインでも動作。" />
     <meta name="twitter:image" content="https://ennacx.github.io/pwdgen/icon-512.png" />
 
+    <!-- SEO manifest -->
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#2D8EFD" />
 
     <title>ランダム文字列生成 | Random characters generator</title>
 
+    <!-- JS(CDN) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous" defer></script>
     <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha256-ew8UiV1pJH/YjpOEBInP1HxVvT/SfrCmwSoUzF9JIgc=" crossorigin="anonymous" defer></script>
 
+    <!-- Local JS -->
     <script src="pwdgen.js" defer></script>
     <script src="reg-service-worker.js" defer></script>
 
+    <!-- CSS(CDN) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha256-2FMn2Zx6PuH5tdBQDRNwrOo60ts5wWPC9R8jK67b3t4=" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha256-pdY4ejLKO67E0CM2tbPtq1DJ3VGDVVdqAR6j3ZwdiE4=" crossorigin="anonymous">
 
+    <!-- Local CSS -->
     <link rel="stylesheet" href="pwdgen.css">
 
+    <!-- favicon -->
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="icon" href="icons/icon-256.png" type="image/png" sizes="256x256" />
@@ -52,6 +59,7 @@
 </head>
 
 <body>
+    <!-- メイン表示部 -->
     <div id="content" class="container-fluid">
         <h1><a href="./">🔒ランダム文字列生成🔑</a></h1>
         <h2>Random characters generator</h2>
@@ -195,6 +203,7 @@
         </div>
     </div>
 
+    <!-- フッター -->
     <footer class="d-flex">
         <div class="disclaimer">
             <p>このツールはブラウザ上で安全なランダム文字列を生成します。生成された文字列は保存されず、すべてローカル処理で行われます。</p>
@@ -209,11 +218,12 @@
         </div>
     </footer>
 
+    <!-- 同時生成結果モーダル -->
     <div id="bulk-generate-result-modal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="#bulk-generate-result-modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="#bulk-generate-result-modalLabel" class="modal-title">文字列&nbsp;<span id="blk_value"></span>個&nbsp;同時生成結果</h5>
+                    <h5 id="#bulk-generate-result-modalLabel" class="modal-title">文字列&nbsp;<span id="bulk_value"></span>個&nbsp;同時生成結果</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -242,6 +252,7 @@
         </div>
     </div>
 
+    <!-- UI制御用JS -->
     <script src="index.js" defer></script>
 </body>
 </html>

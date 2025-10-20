@@ -40,7 +40,7 @@ const $generateResult = $('div#generate-result');
 const $passwordCopyBtn = $('button[name="password_copy"]');
 
 // 複数文字列の個数表示エリア
-const $bulkValueLabel = $('#bulk-generate-result-modal span#blk_value');
+const $bulkValueLabel = $('#bulk-generate-result-modal span#bulk_value');
 // 複数文字列の生成結果表示エリア
 const $bulkGenerateResult = $('#bulk-generate-result-modal div#bulk-generate-result');
 // 複数文字列の格納テキストボックス
@@ -377,7 +377,7 @@ $bulkGenerateBtn.click(async function(){
             // メッセージ表示
             showValidationError(validate);
 
-	        $bulkGenerateBtn.prop('disabled', false);
+            $bulkGenerateBtn.prop('disabled', false);
 
             return;
         }
