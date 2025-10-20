@@ -12,9 +12,6 @@ const HEXADECIMAL = '1234567890abcdef';
 // 紛らわしい文字種一覧
 const MISLEAD_SYMBOLS = '0OcoIl1vyQq9';
 
-// 乱数マッピングアドレス選出用のランダム配列の要素数
-const CRYPT_GENERATE_COUNT= 10;
-
 // 単一文字列選出用の文字列生成個数 (この中からランダムで一つ選んで返却する)
 const PWD_GENERATE_COUNT = 10;
 
@@ -114,24 +111,70 @@ const RESULT = {
  *   - `emoji`: Emoji associated with the "safety" level.
  *
  * Methods:
- * - `get_bar_class(v)`: Returns the CSS class associated with the entropy level of `v`.
+ * - `getBarClass(v)`: Returns the CSS class associated with the entropy level of `v`.
  *   @param {number} v - The entropy value to check against defined thresholds.
  *   @returns {string} The CSS class for the corresponding entropy level.
  *
- * - `get_label(v)`: Returns the label associated with the entropy level of `v`.
+ * - `getLabel(v)`: Returns the label associated with the entropy level of `v`.
  *   @param {number} v - The entropy value to check against defined thresholds.
  *   @returns {string} The label for the corresponding entropy level.
  *
- * - `get_emoji(v)`: Returns the emoji associated with the entropy level of `v`.
+ * - `getEmoji(v)`: Returns the emoji associated with the entropy level of `v`.
  *   @param {number} v - The entropy value to check against defined thresholds.
  *   @returns {string} The emoji for the corresponding entropy level.
  */
 const ENTROPY_STRENGTH = {
+	/**
+	 * Represents a configuration object for a "deadly" status.
+	 *
+	 * @property {number} threshold - The numerical value representing the limit to be considered deadly.
+	 * @property {string} bar_class - CSS class name associated with the deadly status for styling a progress bar or similar UI element.
+	 * @property {string} label - A label or short descriptor for the deadly status.
+	 * @property {string} emoji - An emoji representing or associated with the deadly status.
+	 */
     deadly: { threshold: 60, bar_class: 'danger', label: "危", emoji: "🐣" },
+
+	/**
+	 * Represents a configuration object for a "weakly" status.
+	 *
+	 * @property {number} threshold - The numerical value representing the limit to be considered weakly.
+	 * @property {string} bar_class - CSS class name associated with the weakly status for styling a progress bar or similar UI element.
+	 * @property {string} label - A label or short descriptor for the weakly status.
+	 * @property {string} emoji - An emoji representing or associated with the weakly status.
+	 */
     weakly: { threshold: 90, bar_class: 'warning', label: "弱", emoji: "💪" },
+
+	/**
+	 * Represents a configuration object for a "cautious" status.
+	 *
+	 * @property {number} threshold - The numerical value representing the limit to be considered cautious.
+	 * @property {string} bar_class - CSS class name associated with the cautious status for styling a progress bar or similar UI element.
+	 * @property {string} label - A label or short descriptor for the cautious status.
+	 * @property {string} emoji - An emoji representing or associated with the cautious status.
+	 */
     cautious: { threshold: 128, bar_class: 'success', label: "中", emoji: "🦾" },
+
+	/**
+	 * Represents a configuration object for a "safety" status.
+	 *
+	 * @property {number} threshold - The numerical value representing the limit to be considered safety.
+	 * @property {string} bar_class - CSS class name associated with the safety status for styling a progress bar or similar UI element.
+	 * @property {string} label - A label or short descriptor for the safety status.
+	 * @property {string} emoji - An emoji representing or associated with the safety status.
+	 */
     safety: { threshold: 65536, bar_class: 'primary', label: "強", emoji: "🛡️" },
-    get_bar_class: function(v){
+
+	/**
+	 * Determines the CSS class for a bar based on the provided value and predefined thresholds.
+	 *
+	 * This function evaluates the provided value against multiple thresholds (`deadly`, `weakly`,
+	 * `cautious`, and `safety`) and returns the respective CSS class associated with the matching threshold.
+	 * If the value does not meet any of the conditions, a default CSS class of 'dark' is returned.
+	 *
+	 * @param {number} v - The numeric value to evaluate.
+	 * @returns {string} The CSS class name corresponding to the evaluated threshold or 'dark' as the default.
+	 */
+    getBarClass: function(v){
         if(v < this.deadly.threshold)
             return this.deadly.bar_class;
         else if(v < this.weakly.threshold)
@@ -143,7 +186,20 @@ const ENTROPY_STRENGTH = {
         else
             return 'dark';
     },
-    get_label: function(v){
+
+	/**
+	 * Determines and returns the appropriate label based on the given value compared to predefined thresholds.
+	 *
+	 * If the value is less than the `deadly.threshold`, it returns `deadly.label`.
+	 * If the value is less than the `weakly.threshold` but greater than or equal to `deadly.threshold`, it returns `weakly.label`.
+	 * If the value is less than the `cautious.threshold` but greater than or equal to `weakly.threshold`, it returns `cautious.label`.
+	 * If the value is less than the `safety.threshold` but greater than or equal to `cautious.threshold`, it returns `safety.label`.
+	 * Otherwise, it returns an empty string.
+	 *
+	 * @param {number} v - The value to be compared against the thresholds.
+	 * @returns {string} The corresponding label based on the thresholds, or an empty string if no thresholds are met.
+	 */
+    getLabel: function(v){
         if(v < this.deadly.threshold)
             return this.deadly.label;
         else if(v < this.weakly.threshold)
@@ -155,7 +211,17 @@ const ENTROPY_STRENGTH = {
         else
             return '';
     },
-    get_emoji: function(v){
+
+	/**
+	 * Determines and returns the appropriate emoji based on the input value and defined thresholds.
+	 *
+	 * Compares the input value against predefined thresholds (`deadly`, `weakly`, `cautious`, `safety`)
+	 * and returns the corresponding emoji for the range in which the value falls.
+	 *
+	 * @param {number} v - The value to evaluate and compare against the thresholds.
+	 * @returns {string} The emoji associated with the range of the given value, or an empty string if no range matches.
+	 */
+    getEmoji: function(v){
         if(v < this.deadly.threshold)
             return this.deadly.emoji;
         else if(v < this.weakly.threshold)
@@ -221,10 +287,10 @@ function cryptoRandomIndex(n){
 }
 
 /**
- * 配列の重複要素を削除
+ * Removes duplicate values from an array and returns a new array with unique values.
  *
- * @param   {*[]} array
- * @returns {*[]}
+ * @param {Array} array - The array to process and filter for unique values.
+ * @return {Array} A new array containing only unique values from the input array.
  */
 function arrayUnique(array){
 
@@ -232,11 +298,12 @@ function arrayUnique(array){
 }
 
 /**
- * 配列要素の順番をシャッフル
+ * Shuffles the elements of an array in random order.
+ * Optionally, uses a cryptographically secure random number generator for randomness.
  *
- * @param   {*[]} array
- * @param   {boolean} [crypt = true]
- * @returns {*[]}
+ * @param {Array} array The array to shuffle.
+ * @param {boolean} [crypt=true] Whether to use a cryptographically secure random number generator. Defaults to true.
+ * @return {Array} A new array containing the shuffled elements of the input array.
  */
 function arrayShuffle(array, crypt = true){
 
@@ -246,17 +313,26 @@ function arrayShuffle(array, crypt = true){
     let rnd;
 
     for(let i = cloneArray.length - 1; i >= 0; i--){
-        const tmpStorage = cloneArray[i];
         if(crypt){
-            // cryptoRandomIndex()を使用せず速度向上と最適化を図る
-            crypto.getRandomValues(buf);
-            rnd = buf[0] % (i + 1);
+			// crypto未実装環境下で処理された場合のフォールバック
+	        try{
+		        // cryptoRandomIndex()を使用せず速度向上と最適化を図る
+		        crypto.getRandomValues(buf);
+		        rnd = buf[0] % (i + 1);
+	        } catch(e){
+		        // fallback to Math.random() if crypto is unavailable or blocked
+		        console.warn("Crypto unavailable, falling back to `Math.random()`.", e);
+
+		        rnd = Math.floor(Math.random() * (i + 1));
+	        }
         } else{
             rnd = Math.floor(Math.random() * (i + 1));
         }
 
+		// ループ中のインデックスとランダム選出されたインデックスの要素を入れ替え
+	    const tempChar = cloneArray[i];
         cloneArray[i] = cloneArray[rnd];
-        cloneArray[rnd] = tmpStorage;
+        cloneArray[rnd] = tempChar;
     }
 
     return cloneArray;
@@ -292,14 +368,14 @@ function validation(opt){
         return "アルゴリズムが不正です。";
 
     if(opt.unique){
-        let max_length = 0;
+        let maxLength = 0;
         if(opt.use_type === 'default'){
             if(opt.alpha_u)
-                max_length += 26;
+                maxLength += 26;
             if(opt.alpha_l)
-                max_length += 26;
+                maxLength += 26;
             if(opt.numeric)
-                max_length += 10;
+                maxLength += 10;
             if(opt.symbol){
                 let temp = SYMBOL;
                 if(opt.ignore_symbols !== ''){
@@ -307,21 +383,21 @@ function validation(opt){
                         temp = temp.replace(ignore_symbol, '');
                     }
                 }
-                max_length += temp.length;
+                maxLength += temp.length;
             }
         } else if(opt.use_type === 'hex' || opt.use_type === 'uuid'){
             if(opt.hex || opt.uuid){
-                max_length += 16;
+                maxLength += 16;
             }
         }
 
         if(opt.mislead){
-            max_length -= filterMisleadSymbols(opt).length;
+            maxLength -= filterMisleadSymbols(opt).length;
         }
 
-        if(max_length <= 0)
+        if(maxLength <= 0)
             return "文字種を再選択してください。";
-        if(opt.length > max_length)
+        if(opt.length > maxLength)
             return `指定の条件では${opt.length}文字の文字列を生成できません。`;
     }
 
@@ -338,26 +414,26 @@ function validation(opt){
  */
 function filterMisleadSymbols(opt){
 
-    let mislead_symbols = '';
+    let misleadSymbols = '';
 
     if(opt.mislead){
         if(opt.use_type === 'default'){
             if(opt.alpha_u)
-                mislead_symbols += MISLEAD_SYMBOLS.replace(/[^A-Z]/g, '');
+                misleadSymbols += MISLEAD_SYMBOLS.replace(/[^A-Z]/g, '');
             if(opt.alpha_l)
-                mislead_symbols += MISLEAD_SYMBOLS.replace(/[^a-z]/g, '');
+                misleadSymbols += MISLEAD_SYMBOLS.replace(/[^a-z]/g, '');
             if(opt.numeric)
-                mislead_symbols += MISLEAD_SYMBOLS.replace(/[^0-9]/g, '');
+                misleadSymbols += MISLEAD_SYMBOLS.replace(/[^0-9]/g, '');
         } else if(opt.use_type === 'hex'){
             if(opt.hex)
-                mislead_symbols += MISLEAD_SYMBOLS.replace(/[^0-9a-fA-F]/g, '');
+                misleadSymbols += MISLEAD_SYMBOLS.replace(/[^0-9a-fA-F]/g, '');
         } else if(opt.use_type === 'uuid'){
             if(opt.uuid)
-                mislead_symbols += MISLEAD_SYMBOLS.replace(/[^0-9a-fA-F]/g, '');
+                misleadSymbols += MISLEAD_SYMBOLS.replace(/[^0-9a-fA-F]/g, '');
         }
     }
 
-    return mislead_symbols;
+    return misleadSymbols;
 }
 
 /**
@@ -368,14 +444,14 @@ function filterMisleadSymbols(opt){
  */
 function filterUseCharacters(opt){
 
-    let use_chars = '';
+    let useChars = '';
     if(opt.use_type === 'default'){
         if(opt.alpha_u)
-            use_chars += ALPHA_U;
+            useChars += ALPHA_U;
         if(opt.alpha_l)
-            use_chars += ALPHA_L;
+            useChars += ALPHA_L;
         if(opt.numeric)
-            use_chars += NUMERIC;
+            useChars += NUMERIC;
         if(opt.symbol){
             let temp = SYMBOL;
 
@@ -385,20 +461,19 @@ function filterUseCharacters(opt){
                 }
             }
 
-            use_chars += temp;
+            useChars += temp;
         }
     } else if(opt.use_type === 'hex' || opt.use_type === 'uuid'){
-        if(opt.hex || opt.uuid){
-            use_chars += HEXADECIMAL;
-        }
+        if(opt.hex || opt.uuid)
+            useChars += HEXADECIMAL;
     }
 
-    const mislead_symbols = filterMisleadSymbols(opt);
-    for(let mislead_symbol of mislead_symbols){
-        use_chars = use_chars.replace(mislead_symbol, '');
+    const misleadSymbols = filterMisleadSymbols(opt);
+    for(let misleadSymbol of misleadSymbols){
+        useChars = useChars.replace(misleadSymbol, '');
     }
 
-    return arrayShuffle([...use_chars], opt.algorithm === 'crypt');
+    return arrayShuffle([...useChars], opt.algorithm === 'crypt');
 }
 
 /**
@@ -406,43 +481,40 @@ function filterUseCharacters(opt){
  *
  * @param {string} algo - The algorithm to use for password generation. Valid options are 'crypt' or 'math'.
  * @param {number} len - The desired length of the password.
- * @param {string[]|string} use_chars - A string containing the characters that can be used in the password.
- * @param {boolean} is_unique - Whether the password should contain unique characters only (true) or allow duplicates (false).
+ * @param {string[]|string} useChars - A string containing the characters that can be used in the password.
+ * @param {boolean} isUnique - Whether the password should contain unique characters only (true) or allow duplicates (false).
  * @return {string} The generated password based on the given parameters.
  * @throws {Error} If an unsupported algorithm is specified.
  */
-function generate(algo, len, use_chars, is_unique){
-
-    const ret = RESULT;
-
-    const chars = (Array.isArray(use_chars)) ? use_chars : use_chars.split('');
+function generate(algo, len, useChars, isUnique){
 
     const password = [];
-    const used_chars = new Set();
-    const chars_len = chars.length;
+	const chars = (Array.isArray(useChars)) ? useChars : useChars.split('');
+    const usedChars = new Set();
+    const charsLen = chars.length;
 
     // cryptoベースの安全な生成
     if(algo === 'crypt'){
         const buf = new Uint32Array(1);
         while(password.length < len){
             crypto.getRandomValues(buf);
-            const idx = buf[0] % chars_len;
+            const idx = buf[0] % charsLen;
             const char = chars[idx];
 
-            if(!is_unique || !used_chars.has(char)){
+            if(!isUnique || !usedChars.has(char)){
                 password.push(char);
-                used_chars.add(char);
+                usedChars.add(char);
             }
         }
     }
     // mathベース (互換のため残すが暗号強度は皆無)
     else if(algo === 'math'){
         while(password.length < len){
-            const char = chars[Math.floor(Math.random() * chars_len)];
+            const char = chars[Math.floor(Math.random() * charsLen)];
 
-            if(!is_unique || !used_chars.has(char)){
+            if(!isUnique || !usedChars.has(char)){
                 password.push(char);
-                used_chars.add(char);
+                usedChars.add(char);
             }
         }
     }
@@ -488,26 +560,30 @@ function bulkPasswordGenerate(opt, count){
     else if(count > PWD_BULK_MAX)
         count = PWD_BULK_MAX;
 
-    let use_chars = filterUseCharacters(opt);
+    let useChars = filterUseCharacters(opt);
+	let entropy = undefined;
 
     const passwordResults = [];
     for(let i = 0; i < count; i++){
         // 文字種配列の順番を20%の確率で入れ替え
-        if(Math.floor(Math.random() * 100) < 20){
-            use_chars = arrayShuffle(use_chars);
-        }
+        if(Math.floor(Math.random() * 100) < 20)
+            useChars = arrayShuffle(useChars);
 
-        const st_time = performance.now();
-        const password = generate(opt.algorithm, opt.length, use_chars, opt.unique);
-        const ed_time = performance.now();
+		// エントロピーの算出
+	    if(entropy === undefined)
+		    entropy = calcEntropy(opt.length, useChars.length);
+
+        const stTime = performance.now();
+        const password = generate(opt.algorithm, opt.length, useChars, opt.unique);
+        const edTime = performance.now();
 
         const result = { ...RESULT };
         result.password = password;
         result.length = opt.length;
-        result.entropy = calcEntropy(opt.length, use_chars.length);
-        result.charset_size = use_chars.length;
+        result.entropy = entropy;
+        result.charset_size = useChars.length;
         result.algorithm = opt.algorithm;
-        result.generate_time = ed_time - st_time;
+        result.generate_time = edTime - stTime;
 
         passwordResults.push(result);
     }
@@ -522,9 +598,9 @@ function bulkPasswordGenerate(opt, count){
  */
 function uuidGenerate(){
 
-    const st_time = performance.now();
+    const stTime = performance.now();
     const password = crypto.randomUUID();
-    const ed_time = performance.now();
+    const edTime = performance.now();
 
     const result = { ...RESULT };
     result.password = password;
@@ -532,7 +608,7 @@ function uuidGenerate(){
     result.entropy = 122;
     result.charset_size = 16;
     result.algorithm = 'crypt';
-    result.generate_time = ed_time - st_time;
+    result.generate_time = edTime - stTime;
 
     return result;
 }
