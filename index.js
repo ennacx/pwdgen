@@ -377,6 +377,8 @@ $bulkGenerateBtn.click(async function(){
             // メッセージ表示
             showValidationError(validate);
 
+	        $bulkGenerateBtn.prop('disabled', false);
+
             return;
         }
         // バリデーションエラー無し
