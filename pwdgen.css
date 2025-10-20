@@ -74,8 +74,8 @@ footer ul.copy-links {
 footer ul.copy-links li {
   padding: 0 4px;
 }
-footer ul.copy-links li:not(:last-child) {
-  border-right: 1px solid #a5a5a5;
+footer ul.copy-links li:not(:first-child) {
+  border-left: 1px solid #a5a5a5;
 }
 footer ul.copy-links li a {
   text-decoration: none;

@@ -103,8 +103,8 @@ footer {
 		& li {
 			padding: 0 4px;
 
-			&:not(:last-child) {
-				border-right: 1px solid #a5a5a5;
+			&:not(:first-child) {
+				border-left: 1px solid #a5a5a5;
 			}
 
 			a {
