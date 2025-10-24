@@ -75,8 +75,10 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Publish URL to summary
+        run: echo "Deployed to ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
