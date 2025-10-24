@@ -33,6 +33,9 @@ h1 {
 h1 a {
   color: black;
 }
+h1 a:hover {
+  color: black;
+}
 
 h2 {
   margin-bottom: 16px;
