@@ -474,7 +474,8 @@ $passwordCopyBtn.click(function(){
         .catch((err) => {
             console.log(err);
             window.alert("コピーに失敗しました。");
-        });
+        })
+    ;
 });
 
 // クリップボードコピー非対応ブラウザーの場合はコピーボタンを非表示にする

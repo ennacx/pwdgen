@@ -30,6 +30,7 @@ jobs:
 
     - name: Make directory
       run: |
+        rm -rf ./dist
         mkdir -p ./dist
         mkdir -p ./dist/resources
 
