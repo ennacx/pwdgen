@@ -32,7 +32,12 @@ jobs:
       run: |
         rm -rf ./dist
         mkdir -p ./dist
+        mkdir -p ./dist/vendor
         mkdir -p ./dist/resources
+
+    - name: Generate Google search console file
+      run: |
+        echo "google-site-verification: googleb95e7dd5d4aa5997.html" > ./dist/googleb95e7dd5d4aa5997.html
 
     - name: Generate service worker with git hash
       run: |
@@ -56,7 +61,7 @@ jobs:
 
     - name: Copy resources
       run: |
-        cp ./googleb95e7dd5d4aa5997.html ./dist/
+        cp -r ./vendor/. ./dist/vendor/
         cp ./manifest.json ./dist/
         cp ./favicon.ico ./dist/
         cp ./resources/icon-256.png ./dist/resources/
