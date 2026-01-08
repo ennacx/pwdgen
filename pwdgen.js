@@ -26,20 +26,20 @@ const PWD_BULK_MAX = 10000;
 /**
  * Configuration object representing the options for generating or validating passwords.
  *
- * @typedef {Object} OPTION
- * @property {number} length - Specifies the minimum length of the password.
- * @property {string} use_type - Indicates the usage type for the password generation. Default is 'default'.
- * @property {boolean} alpha_u - Determines if uppercase alphabetical characters are allowed.
- * @property {boolean} alpha_l - Determines if lowercase alphabetical characters are allowed.
- * @property {boolean} numeric - Indicates whether numeric characters are included.
- * @property {boolean} symbol - Specifies if symbols will be included in the password.
- * @property {boolean} hex - Denotes whether the password should use hexadecimal characters.
- * @property {boolean} uuid - Indicates if the output should follow a UUID structure.
- * @property {boolean} unique - Enforces all characters in the password to be unique.
- * @property {boolean} mislead - Allows misleading characters (e.g., 'O' vs '0') if set to true.
- * @property {string} algorithm - Defines the algorithm to use for password operations. Default is 'math'.
- * @property {string} ignore_symbols - A string containing characters to exclude from use as symbols.
- * @property {boolean} validate - Determines if validation is required for the generated password.
+ * @var {Object} OPTION
+ * @property {number} OPTION.length - Specifies the minimum length of the password.
+ * @property {string} OPTION.use_type - Indicates the usage type for the password generation. Default is 'default'.
+ * @property {boolean} OPTION.alpha_u - Determines if uppercase alphabetical characters are allowed.
+ * @property {boolean} OPTION.alpha_l - Determines if lowercase alphabetical characters are allowed.
+ * @property {boolean} OPTION.numeric - Indicates whether numeric characters are included.
+ * @property {boolean} OPTION.symbol - Specifies if symbols will be included in the password.
+ * @property {boolean} OPTION.hex - Denotes whether the password should use hexadecimal characters.
+ * @property {boolean} OPTION.uuid - Indicates if the output should follow a UUID structure.
+ * @property {boolean} OPTION.unique - Enforces all characters in the password to be unique.
+ * @property {boolean} OPTION.mislead - Allows misleading characters (e.g., 'O' vs '0') if set to true.
+ * @property {string} OPTION.algorithm - Defines the algorithm to use for password operations. Default is 'math'.
+ * @property {string} OPTION.ignore_symbols - A string containing characters to exclude from use as symbols.
+ * @property {boolean} OPTION.validate - Determines if validation is required for the generated password.
  */
 const OPTION = {
     length: PWD_LEN_MIN,
@@ -66,13 +66,13 @@ const OPTION = {
 /**
  * Represents the result of a password generation process.
  *
- * @typedef {Object} RESULT
- * @property {string} password                The generated password string.
- * @property {number|undefined} length        The length of the generated password.
- * @property {number|undefined} entropy       The entropy of the generated password, indicating its randomness and strength.
- * @property {number|undefined} charset_size  The size of the character set used for generating the password.
- * @property {string|undefined} algorithm     The algorithm used for password generation.
- * @property {number|undefined} generate_time The time taken to generate the password, typically in milliseconds.
+ * @var {Object} RESULT
+ * @property {string} RESULT.password                The generated password string.
+ * @property {number|undefined} RESULT.length        The length of the generated password.
+ * @property {number|undefined} RESULT.entropy       The entropy of the generated password, indicating its randomness and strength.
+ * @property {number|undefined} RESULT.charset_size  The size of the character set used for generating the password.
+ * @property {string|undefined} RESULT.algorithm     The algorithm used for password generation.
+ * @property {number|undefined} RESULT.generate_time The time taken to generate the password, typically in milliseconds.
  */
 const RESULT = {
     password: '',
@@ -577,7 +577,7 @@ function bulkPasswordGenerate(opt, count){
         const password = generate(opt.algorithm, opt.length, useChars, opt.unique);
         const edTime = performance.now();
 
-        const result = { ...RESULT };
+        const result = structuredClone(RESULT);
         result.password = password;
         result.length = opt.length;
         result.entropy = entropy;
@@ -602,7 +602,7 @@ function uuidGenerate(){
     const password = crypto.randomUUID();
     const edTime = performance.now();
 
-    const result = { ...RESULT };
+    const result = structuredClone(RESULT);
     result.password = password;
     result.length = 36;
     result.entropy = 122;
@@ -614,7 +614,7 @@ function uuidGenerate(){
 }
 
 /**
- * 複数ののUUID生成
+ * 複数のUUID生成
  *
  * @param {Number} count
  * @returns {string[]}
